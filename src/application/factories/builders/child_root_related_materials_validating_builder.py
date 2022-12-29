@@ -1,10 +1,10 @@
 from domain.repositories import RequirementRepository, RelatedMaterialRepository
-from domain.interactors import NormalizeForRoot
+from domain.interactors import ValidateRelatedMaterialsForRoot
 from domain.entities import Root
 from utilites.write_log_message_adapter import WriteLogMessageAdapter
 
 
-class ChildRootNormalizingBuilder:
+class ChildRootRelatedMaterialsValidatingBuilder:
 
     def __call__(self, child_root: Root, get_adapter, post_adapter, supply_repository, **_ignored):
 
@@ -20,7 +20,7 @@ class ChildRootNormalizingBuilder:
         )
         log_adapter = WriteLogMessageAdapter()
 
-        normalize_for_root = NormalizeForRoot(
+        normalize_for_root = ValidateRelatedMaterialsForRoot(
             requirement_repository=requirement_repository,
             related_material_repository=related_material_repository,
             main_supply_repository=supply_repository,

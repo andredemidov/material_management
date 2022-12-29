@@ -11,8 +11,8 @@ class PostDataAdapterFacade:
     def save_requirement(self, items: List[MaterialRequirement]) -> dict:
         return neosintez.SaveRequirementAdapter(self._session).execute(items)
 
-    def save_related_material(self, items: List[MaterialRelated]) -> dict:
-        return neosintez.SaveRelatedMaterialAdapter(self._session).execute(items)
+    def save_related_material(self, items: List[MaterialRelated], only_validation_info=False) -> dict:
+        return neosintez.SaveRelatedMaterialAdapter(self._session).execute(items, only_validation_info)
 
     def delete_related_materials(self, items: List[MaterialRelated]) -> dict:
         return neosintez.DeleteRelatedMaterialAdapter(self._session).execute(items)

@@ -32,7 +32,7 @@ class GetRelatedMaterialsInstances:
             self._related_material_repository.add(new_material_related)
 
     def execute(self):
-        requirements = self._requirement_repository.get_customer_supplied_with_main_code()
+        requirements = self._requirement_repository.get_own_supplied_with_main_code()
         requirements.sort(key=lambda x: x.item_id)
         related_materials = self._related_material_repository.get()
         related_materials.sort(key=lambda x: x.host)

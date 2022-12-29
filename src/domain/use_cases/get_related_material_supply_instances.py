@@ -27,7 +27,7 @@ class GetRelatedMaterialSupplyInstances:
         free_supplies_dict = self._get_dict(tuple(self._supply_repository.get_by_root_id('free')))
         print('get supplies dict complete')
 
-        for requirement in self._requirement_repository.get_customer_supplied_with_main_code():
+        for requirement in self._requirement_repository.get_own_supplied_with_main_code():
 
             for related_material in requirement.related_materials:
                 # экземпляр поставки по текущему корню

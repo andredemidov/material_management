@@ -29,7 +29,7 @@ class DeleteForRoot:
         log.write_info('Deleting related materials')
         requirements_with_delete_codes = list(
             filter(lambda item: any(
-                map(lambda c: c.delete, item.related_materials)), self._requirement_repository.get_customer_supplied_with_main_code())
+                map(lambda c: c.delete, item.related_materials)), self._requirement_repository.get_own_supplied_with_main_code())
         )
         log.write_info(f'Total requirements_with_delete_codes {len(requirements_with_delete_codes)}')
         responses_statistic = self._related_material_repository.delete_marked_for_delete()

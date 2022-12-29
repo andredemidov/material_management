@@ -7,7 +7,7 @@ class GetRelatedMaterialsForOneRequirement:
         self._adapter = adapter
 
     def execute(self):
-        requirements = self._requirement_repository.get_customer_supplied_with_main_code()
+        requirements = self._requirement_repository.get_own_supplied_with_main_code()
 
         for requirement in requirements:
 

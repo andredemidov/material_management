@@ -44,8 +44,10 @@ class GetRelatedMaterialAdapter(AbstractAdapter):
         self_id = item['Object']['Id']
         host_id = item['Object']['HostObjectId']
         delete = bool(self.get_value(attributes, self.delete_attribute_id))
+        validity_confirmed = self.get_value(attributes, self.valid_attribute_id) == "Корректно имя"
         code = self.get_value(attributes, self.code_attribute_id)
         contractor_id = self.get_value(attributes, self.contractor_attribute_id, get_only_id=True)
+        name = self.get_value(attributes, self.name_attribute_id)
 
         related_material = MaterialRelated(
             self_id=self_id,
@@ -53,6 +55,8 @@ class GetRelatedMaterialAdapter(AbstractAdapter):
             host=host_id,
             code=code,
             delete=delete,
+            self_name=name,
+            validity_confirmed=validity_confirmed,
         )
         self._related_materials.append(related_material)
         self._get_current_distributing_data(item, related_material)
@@ -130,6 +134,11 @@ class GetRelatedMaterialAdapter(AbstractAdapter):
             attribute_type='int'
         )
         related_material.cur_name = self.get_value(attributes, self.name_attribute_id)
+
+        valid_attribute_value = self.get_value(attributes, self.valid_attribute_id)
+        related_material.cur_name_valid = False if valid_attribute_value == "Проверить имя" else True
+        related_material.cur_code_valid = False if valid_attribute_value == "Проверить код" else True
+        related_material.cur_delete = valid_attribute_value == "Удалить"
 
     def execute(self, root: Root) -> List[MaterialRelated]:
         self._get_related_materials_data(root_id=root.root_id)

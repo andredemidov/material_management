@@ -17,9 +17,14 @@ class NormalizeRelatedMaterials:
                 related_material = MaterialRelated(host=requirement.item_id, code=code)
                 requirement.related_materials.append(related_material)
 
+    @staticmethod
+    def _get_valid_related_materials(requirement: MaterialRequirement):
+        result = list(filter(lambda x: x.valid(), requirement.related_materials))
+        return list(map(lambda x: x.code, result))
+
     def _get_unique_codes_sets(self):
         requirements = self._repository_source.get()
-        unique_codes_sets = list(map(lambda req: set([x.code for x in req.related_materials]), requirements))
+        unique_codes_sets = list(map(lambda req: set(self._get_valid_related_materials(req)), requirements))
         for i in range(len(unique_codes_sets)):
             j = i + 1
             while j < len(unique_codes_sets):
@@ -31,7 +36,7 @@ class NormalizeRelatedMaterials:
         return unique_codes_sets
 
     def _normalize_related_materials(self, unique_codes_sets):
-        requirements = self._requirement_repository.get_customer_supplied_with_main_code()
+        requirements = self._requirement_repository.get_own_supplied_with_main_code()
         for requirement in requirements:
             if requirement.related_materials is not None:
                 codes_set = set()

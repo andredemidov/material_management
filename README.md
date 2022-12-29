@@ -1,0 +1,1 @@
+The purpose of application is management of material in material tracker

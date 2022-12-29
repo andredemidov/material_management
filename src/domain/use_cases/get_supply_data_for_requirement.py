@@ -257,7 +257,7 @@ class GetSupplyDataForRequirements:
             return max_date
 
     def execute(self):
-        requirements = self._requirement_repository.get_customer_supplied_with_main_code()
+        requirements = self._requirement_repository.get_own_supplied_with_main_code()
         requirements.sort(key=lambda x: x.name)
         requirements.sort(key=lambda x: x.level_4)
         requirements.sort(key=lambda x: self._get_sort_date(x))

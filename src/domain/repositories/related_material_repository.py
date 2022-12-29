@@ -17,13 +17,13 @@ class RelatedMaterialRepository(Repository):
         related_materials = self._get_data_adapter.get_related_materials(self._root)
         self.add(related_materials)
 
-    def save(self, changed=True):
+    def save(self, changed=True, only_validation_info=False):
         if changed:
-            related_materials_for_save = list(filter(lambda x: x.have_change(), self._entries))
+            related_materials_for_save = list(filter(lambda x: x.have_change(only_validation_info), self._entries))
         else:
             related_materials_for_save = self._entries
 
-        return self._post_data_adapter.save_related_material(related_materials_for_save)
+        return self._post_data_adapter.save_related_material(related_materials_for_save, only_validation_info)
 
     def delete_marked_for_delete(self):
         marked_for_delete = list(filter(lambda x: x.delete, self.get()))
@@ -38,5 +38,5 @@ class RelatedMaterialRepository(Repository):
             raise TypeError('Only instance of MaterialRelated may be added into related materials repository')
 
     def create(self):
-        related_materials_for_create = list(filter(lambda x: not x.delete and not x.self_id, self.get()))
+        related_materials_for_create = list(filter(lambda x: x.valid() and not x.self_id, self.get()))
         return self._post_data_adapter.create_related_material(related_materials_for_create)

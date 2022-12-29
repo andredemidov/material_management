@@ -62,7 +62,7 @@ class DistributeForRoot:
         MarkDuplicatedRelatedMaterials(self._requirement_repository).execute()
         requirements_with_delete_codes = list(
             filter(lambda item: any(
-                map(lambda c: c.delete, item.related_materials)), self._requirement_repository.get_customer_supplied_with_main_code())
+                map(lambda c: c.delete, item.related_materials)), self._requirement_repository.get_own_supplied_with_main_code())
         )
         self._log_adapter.write_info(f'Total requirements_with_delete_codes {len(requirements_with_delete_codes)}')
         responses_statistic = self._related_material_repository.delete_marked_for_delete()
@@ -84,7 +84,7 @@ class DistributeForRoot:
         GetSupplyDataForRequirements(self._requirement_repository).execute()
 
     def _save_requirements(self):
-        changed_requirements = list(filter(lambda x: x.have_change(), self._requirement_repository.get_customer_supplied_with_main_code()))
+        changed_requirements = list(filter(lambda x: x.have_change(), self._requirement_repository.get_own_supplied_with_main_code()))
         self._log_adapter.write_info(f'Total changed requirements {len(changed_requirements)}')
         responses_statistic = self._requirement_repository.save()
         self._log_adapter.write_info(f'Saving requirements complete')
