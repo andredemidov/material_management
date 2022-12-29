@@ -26,6 +26,6 @@ class GetRelatedMaterialNotificationInstances:
         notifications = list(filter(lambda x: x.passed_date, notifications))
         notifications_codes = self._get_notifications_dict(notifications)
 
-        for requirement in self._requirement_repository.get_customer_supplied_with_main_code():
+        for requirement in self._requirement_repository.get_own_supplied_with_main_code():
             self._find_notification_material(requirement, notifications_codes)
         print('get notification materials instances complete')

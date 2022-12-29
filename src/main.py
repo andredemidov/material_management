@@ -3,13 +3,13 @@ from datetime import datetime
 from application.controllers import ManageAllMainRoots, ManageMainRoot, ManageChildRoot, ExportAllRequirements
 
 # При релизе версии нужно ставить в переменную debug значение false
-DEBUG = False
+DEBUG = True
 
 
 def debug():
-    mode = 'distribution'
-    main_root_id = '2ff70be7-1480-ec11-911c-005056b6948b'
-    child_root_id = ''
+    mode = 'validation'
+    main_root_id = ''
+    child_root_id = 'c470a234-e559-11ec-9136-005056b6c24b'
     if main_root_id:
         ManageMainRoot().execute(mode, main_root_id)
     elif child_root_id:
@@ -28,7 +28,8 @@ def manual():
         1: 'distribution',
         2: 'deleting',
         3: 'normalization',
-        4: 'export',
+        4: 'validation',
+        5: 'export',
     }
     controllers = {
         1: 'all',
@@ -39,7 +40,7 @@ def manual():
     mode_number = None
     while mode_number is None:
         s = input('Введите: ')
-        if s.isdigit() and s in ['1', '2', '3', '4']:
+        if s.isdigit() and s in ['1', '2', '3', '4', '5']:
             mode_number = int(s)
         else:
             print('Не удалось распознать запрос')
@@ -87,4 +88,4 @@ if __name__ == '__main__':
     else:
         manual()
 
-    print(f'Общее время выполнения {datetime.now() - start_time}')
+    print(f'Total duration {datetime.now() - start_time}')

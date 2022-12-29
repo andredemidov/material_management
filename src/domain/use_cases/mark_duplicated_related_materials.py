@@ -15,7 +15,7 @@ class MarkDuplicatedRelatedMaterials:
     def execute(self):
         """Метод помечает на удаление дубликаты related_material во всех экземплярах requirement"""
 
-        requirements = self._requirement_repository.get_customer_supplied_with_main_code()
+        requirements = self._requirement_repository.get_own_supplied_with_main_code()
         for requirement in requirements:
             self._mark_duplicated_related_material(requirement)
         print('mark duplicated materials complete')

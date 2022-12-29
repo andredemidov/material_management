@@ -25,7 +25,7 @@ class RequirementRepository(Repository):
 
         return self._post_data_adapter.save_requirement(requirements_for_save)
 
-    def get_customer_supplied_with_main_code(self):
+    def get_own_supplied_with_main_code(self):
         filter_items = [
             Filter('type_supply', 'eq', 'Заказчик'),
             Filter('main_code', 'exist', 'forvalidation')

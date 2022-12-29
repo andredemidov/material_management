@@ -28,7 +28,7 @@ class MarkRelatedMaterialForDelete:
             related_material.delete = True
 
     def execute(self):
-        requirements = self._requirement_repository.get_customer_supplied_with_main_code()
+        requirements = self._requirement_repository.get_own_supplied_with_main_code()
         requirements_with_delete_codes = list(
             filter(lambda item: any(map(lambda c: c.delete, item.related_materials)), requirements)
         )

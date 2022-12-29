@@ -1,18 +1,18 @@
 import unittest
 from src.domain.entities.material_requirement import MaterialRequirement
 from src.domain.entities import MaterialRelated
+from src.domain.repositories import RequirementRepository
 from src.domain.use_cases.normalize_related_materials import NormalizeRelatedMaterials
 
 
 class TestNormalizeRelatedMaterials(unittest.TestCase):
 
-    def test_execute_unnormalized_data_normalized_return(self):
-        # arrange
+    def setUp(self) -> None:
         unnormalized_data = list()
         for i in range(4):
             related_materials = [
-                MaterialRelated(host='forvalidation', code=f'{i}_001'),
-                MaterialRelated(host='forvalidation', code=f'{i}_002')
+                MaterialRelated(host='forvalidation', code=f'{i}123456789', name_valid=True),
+                MaterialRelated(host='forvalidation', code=f'{i}989898989', name_valid=True)
             ]
             requirement = MaterialRequirement(
                 item_id='forvalidation',
@@ -27,29 +27,70 @@ class TestNormalizeRelatedMaterials(unittest.TestCase):
                 mounted=0,
                 mounted_spool=0,
                 related_materials=related_materials,
+                construction='forvalidation',
+                construction_subobject='forvalidation',
+                level_3='forvalidation',
+                project_section='forvalidation',
+                weld=0,
             )
             unnormalized_data.append(requirement)
-        unnormalized_data[0].related_materials.append(MaterialRelated(host='forvalidation', code=f'common_code'))
-        unnormalized_data[1].related_materials.append(MaterialRelated(host='forvalidation', code=f'common_code'))
+        common_related_material = MaterialRelated(host='forvalidation', code=f'0000000000', name_valid=True)
 
-        stub_repository = FakeRepository()
-        stub_repository.fake_list = unnormalized_data
+        unnormalized_data[0].related_materials.append(common_related_material)
+        unnormalized_data[1].related_materials.append(common_related_material)
+
+        self.stub_repository = RequirementRepository(None, None, None, unnormalized_data)
+
+    def test_execute_unnormalized_data_normalized_return(self):
+        # arrange
+        stub_repository = self.stub_repository
         # act
         NormalizeRelatedMaterials(stub_repository).execute()
         # assert
         result_data = list(
-            map(lambda x: ','.join(sorted(list(map(lambda y: y.code, x.related_materials)))), stub_repository.list()))
-        with_common_code = list(filter(lambda x: 'common_code' in x, result_data))
-        without_common_code = list(filter(lambda x: 'common_code' not in x, result_data))
+            map(lambda x: ','.join(sorted(list(map(lambda y: y.code, x.related_materials)))), stub_repository.get()))
+        with_common_code = list(filter(lambda x: '0000000000' in x, result_data))
+        without_common_code = list(filter(lambda x: '0000000000' not in x, result_data))
         self.assertGreater(len(with_common_code), 1)
         self.assertGreaterEqual(len(without_common_code), 1)
         self.assertEqual(len(set(with_common_code)), 1)
 
+    def test_execute_invalid_item_not_distributed(self):
+        # arrange
+        stub_repository = self.stub_repository
+        invalid_related_material = MaterialRelated(host='forvalidation', code='0001000111', name_valid=False)
+        stub_repository.get()[0].related_materials.append(invalid_related_material)
+        # act
+        NormalizeRelatedMaterials(stub_repository).execute()
+        # assert
+        result_data = list(
+            map(lambda x: ','.join(sorted(list(map(lambda y: y.code, x.related_materials)))), stub_repository.get()))
+        with_invalid_name = list(filter(lambda x: '0001000111' in x, result_data))
+        self.assertEqual(len(with_invalid_name), 1)
 
-class FakeRepository:
-
-    def __init__(self):
-        self.fake_list = []
-
-    def list(self):
-        return self.fake_list
+    def test_execute_validity_confirmed_name_valid_ignored(self):
+        # arrange
+        stub_repository = self.stub_repository
+        checked_related_material = MaterialRelated(
+            host='forvalidation',
+            code=f'0001000111',
+            name_valid=False,
+            validity_confirmed=True
+        )
+        checked_related_material_with_invalid_code = MaterialRelated(
+            host='forvalidation',
+            code=f'invalid_code',
+            name_valid=False,
+            validity_confirmed=True
+        )
+        extended_related_material = [checked_related_material, checked_related_material_with_invalid_code]
+        stub_repository.get()[0].related_materials.extend(extended_related_material)
+        # act
+        NormalizeRelatedMaterials(stub_repository).execute()
+        # assert
+        result_data = list(
+            map(lambda x: ','.join(sorted(list(map(lambda y: y.code, x.related_materials)))), stub_repository.get()))
+        with_checked_validity = list(filter(lambda x: '0001000111' in x, result_data))
+        with_invalid_code = list(filter(lambda x: 'invalid_code' in x, result_data))
+        self.assertGreater(len(with_checked_validity), 1)
+        self.assertEqual(len(with_invalid_code), 1)

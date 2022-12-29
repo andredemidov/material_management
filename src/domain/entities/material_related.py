@@ -9,6 +9,7 @@ from .material_notification import MaterialNotification
 class MaterialRelated:
     host: str
     code: str
+    self_name: str = None
     self_id: str = None
     item_id: str = None
     delete: bool = False
@@ -17,6 +18,8 @@ class MaterialRelated:
     order: MaterialOrder = None
     notification: MaterialNotification = None
     rest_supply: List[MaterialSupply] = field(default_factory=list)
+    name_valid: bool = None
+    validity_confirmed: bool = False
     available: (int, float) = 0
     free_available: (int, float) = 0
     _rest_total_available: (int, float) = None
@@ -41,6 +44,9 @@ class MaterialRelated:
     cur_total_shipped: (int, float) = 0
     cur_total_delivered: (int, float) = 0
     cur_name: str = ''
+    cur_name_valid: bool = None
+    cur_code_valid: bool = None
+    cur_delete: bool = False
 
     def __str__(self):
         return self.code
@@ -127,45 +133,77 @@ class MaterialRelated:
         elif self.rest_supply:
             return self.rest_supply[0].name
         else:
-            return None
+            return self.self_name
+
+    @property
+    def code_valid(self) -> bool:
+        return isinstance(self.code, str) and self.code.isdigit() and len(self.code) == 10
 
     def current_data_to_dict(self) -> dict:
         return {
-            'supply_amount': round(self.cur_amount, 4),
-            'issued': round(self.cur_issued, 4),
-            'supplied': round(self.cur_supplied, 4),
-            'moving': round(self.cur_moving, 4),
-            'total_moving': round(self.cur_total_moving, 4),
-            'total_delivered': round(self.cur_total_delivered, 4),
-            'delivered': round(self.cur_delivered, 4),
-            'shipped_available': round(self.cur_shipped_available, 4),
-            'shipped_total_available': round(self.cur_total_shipped, 4),
-            'available': round(self.cur_available, 4),
-            'rest_total_available': round(self.cur_rest_total_available, 4),
-            'rest_available': round(self.cur_rest_available, 4),
-            'free_available': round(self.cur_free_available, 4),
-            'free_total_available': round(self.cur_free_total_available, 4),
-            'name': self.name,
+            'supply_amount': round(self.cur_amount, 8),
+            'issued': round(self.cur_issued, 8),
+            'supplied': round(self.cur_supplied, 8),
+            'moving': round(self.cur_moving, 8),
+            'total_moving': round(self.cur_total_moving, 8),
+            'total_delivered': round(self.cur_total_delivered, 8),
+            'delivered': round(self.cur_delivered, 8),
+            'shipped_available': round(self.cur_shipped_available, 8),
+            'shipped_total_available': round(self.cur_total_shipped, 8),
+            'available': round(self.cur_available, 8),
+            'rest_total_available': round(self.cur_rest_total_available, 8),
+            'rest_available': round(self.cur_rest_available, 8),
+            'free_available': round(self.cur_free_available, 8),
+            'free_total_available': round(self.cur_free_total_available, 8),
+            'name': self.cur_name,
+            'name_valid': self.cur_name_valid if not self.validity_confirmed else None,
+            'code_valid': self.cur_code_valid,
+            'delete': self.cur_delete,
         }
 
     def new_data_to_dict(self) -> dict:
         return {
-            'supply_amount': round(self.amount, 4),
-            'issued': round(self.issued, 4),
-            'supplied': round(self.supplied, 4),
-            'moving': round(self.moving, 4),
-            'total_moving': round(self.total_moving, 4),
-            'total_delivered': round(self.total_delivered, 4),
-            'delivered': round(self.delivered, 4),
-            'shipped_available': round(self.shipped_available, 4),
-            'shipped_total_available': round(self.total_shipped, 4),
-            'available': round(self.available, 4),
-            'rest_total_available': round(self.rest_total_available, 4),
-            'rest_available': round(self.rest_available, 4),
-            'free_available': round(self.free_available, 4),
-            'free_total_available': round(self.free_total_available, 4),
+            'supply_amount': round(self.amount, 8),
+            'issued': round(self.issued, 8),
+            'supplied': round(self.supplied, 8),
+            'moving': round(self.moving, 8),
+            'total_moving': round(self.total_moving, 8),
+            'total_delivered': round(self.total_delivered, 8),
+            'delivered': round(self.delivered, 8),
+            'shipped_available': round(self.shipped_available, 8),
+            'shipped_total_available': round(self.total_shipped, 8),
+            'available': round(self.available, 8),
+            'rest_total_available': round(self.rest_total_available, 8),
+            'rest_available': round(self.rest_available, 8),
+            'free_available': round(self.free_available, 8),
+            'free_total_available': round(self.free_total_available, 8),
             'name': self.name,
+            'name_valid': self.name_valid if not self.validity_confirmed else None,
+            'code_valid': self.code_valid,
+            'delete': self.delete,
         }
 
-    def have_change(self):
-        return self.current_data_to_dict() != self.new_data_to_dict()
+    def have_change(self, only_validation_info=False) -> bool:
+        current_data = self.current_data_to_dict()
+        new_data = self.new_data_to_dict()
+        if only_validation_info:
+            flag = any(
+                [
+                     current_data['name'] != new_data['name'],
+                     current_data['name_valid'] != new_data['name_valid'],
+                     current_data['code_valid'] != new_data['code_valid'],
+                     current_data['delete'] != new_data['delete'],
+                ]
+            )
+        else:
+            flag = self.current_data_to_dict() != self.new_data_to_dict()
+        return flag
+
+    def valid(self) -> bool:
+        return all(
+            [
+                not self.delete,
+                self.code_valid,
+                self.name_valid or self.validity_confirmed,
+            ]
+        )

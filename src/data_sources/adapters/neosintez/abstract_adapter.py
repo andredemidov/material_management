@@ -18,6 +18,7 @@ class AbstractAdapter:
 
     code_attribute_id = 'b1461a5b-0603-eb11-9110-005056b6948b'
     delete_attribute_id = '7d39b7fb-b9eb-ec11-9131-005056b6948b'
+    valid_attribute_id = '227eb4c2-af86-ed11-9155-005056b6948b'
     # for supply
     supply_amount_attribute_id = 'cb67f5e8-0315-ea11-910b-005056b6948b'
     date_attribute_id = '30917a41-4356-ec11-911a-005056b6948b'
@@ -40,7 +41,7 @@ class AbstractAdapter:
     requirement_available_attribute_id = '9b1a4515-c5e7-ec11-9130-005056b6948b'
     requirement_supply_amount_attribute_id = '376f21de-c4e7-ec11-9130-005056b6948b'
     actual_attribute_value = 'f15978b1-d193-e911-80cd-9783b3495d40'
-    delete_attribute_value = 'd5fa86ec-b9eb-ec11-9131-005056b6948b'
+    # delete_attribute_value = 'd5fa86ec-b9eb-ec11-9131-005056b6948b'
     level_4_attribute_id = '37ddf98d-6bf7-ec11-9134-005056b6948b'
     level_3_attribute_id = '65e17bf4-6bf7-ec11-9134-005056b6948b'
     project_section_attribute_id = '9b1bdb78-d770-e911-8115-817c3f53a992'
@@ -81,6 +82,13 @@ class AbstractAdapter:
     total_shipped_attribute_id = '682ed6ee-4b50-ed11-914b-005056b6948b'
     delivery_date_attribute_id = '42b74304-823d-ed11-9147-005056b6948b'
     shipping_date_attribute_id = 'e5b80c68-f56f-e911-8115-817c3f53a992'
+
+    # for related material
+    delete_attribute_value = 'd5fa86ec-b9eb-ec11-9131-005056b6948b'
+    valid_attribute_values = {
+        "Проверить имя": '365a3acd-5b86-ed11-9155-005056b6948b',
+        "Проверить код": '153fe32d-5c86-ed11-9155-005056b6948b',
+    }
 
     def __init__(self, session):
         self._session: aiohttp.ClientSession = session
