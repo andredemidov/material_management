@@ -76,7 +76,8 @@ class GetSupplyDataForRequirements:
     ):
         if total_attributes is None:
             total_attributes = list()
-        for related_material in requirement.related_materials:
+        valid_related_materials = list(filter(lambda x: x.valid(), requirement.related_materials))
+        for related_material in valid_related_materials:
             supply_object = getattr(related_material, supply_object_attr)
             kwargs = {
                 'requirement': requirement,
