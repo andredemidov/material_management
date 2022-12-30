@@ -117,7 +117,7 @@ class GetSupplyDataForRequirements:
             related_material_set_attr='moving',
             compare_attr=compare_attr,
             set_attr='new_moving',
-            target_attr='moving',
+            target_attr='new_moving',
             set_total_flag=set_total_flag,
             total_attributes=total_attributes
         )
@@ -134,7 +134,7 @@ class GetSupplyDataForRequirements:
             related_material_set_attr='delivered',
             compare_attr=compare_attr,
             set_attr='new_delivered',
-            target_attr='delivered',
+            target_attr='new_delivered',
             set_total_flag=set_total_flag,
             total_attributes=total_attributes
         )
@@ -204,7 +204,7 @@ class GetSupplyDataForRequirements:
             supply_object_compare_attr='available',
             related_material_set_attr='free_available',
             compare_attr=compare_attr,
-            set_attr='new_new_free_available',
+            set_attr='new_free_available',
             target_attr='total_available',
             set_total_flag=set_total_flag,
             total_attributes=total_attributes
