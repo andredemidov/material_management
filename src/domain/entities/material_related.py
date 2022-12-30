@@ -145,7 +145,7 @@ class MaterialRelated:
             'rest_available': round(self.cur_rest_available, 4),
             'free_available': round(self.cur_free_available, 4),
             'free_total_available': round(self.cur_free_total_available, 4),
-            'name': self.name,
+            'name': self.cur_name,
         }
 
     def new_data_to_dict(self) -> dict:
