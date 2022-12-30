@@ -3,7 +3,7 @@ from datetime import datetime
 from application.controllers import ManageAllMainRoots, ManageMainRoot, ManageChildRoot, ExportAllRequirements
 
 # При релизе версии нужно ставить в переменную debug значение false
-DEBUG = True
+DEBUG = False
 
 
 def debug():
@@ -36,11 +36,12 @@ def manual():
         2: 'main',
         3: 'child'
     }
-    print('Выбор режима', 'распределение - 1', 'удаление - 2', 'нормализация - 3', 'экспорт - 4', sep='\n')
+    print('Выберете действие')
+    print(*[f'{item[1]} - {item[0]}' for item in modes.items()], sep='\n')
     mode_number = None
     while mode_number is None:
         s = input('Введите: ')
-        if s.isdigit() and s in ['1', '2', '3', '4', '5']:
+        if s.isdigit() and modes.get(int(s)):
             mode_number = int(s)
         else:
             print('Не удалось распознать запрос')
@@ -51,11 +52,12 @@ def manual():
         input('Будет выполнен экспорт всех потребностей в эксель файл. Для начала обработки нажмите Ввод')
         ExportAllRequirements().execute()
     else:
-        print('Объекты', 'все - 1', 'одна стройка - 2', 'один титул - 3', sep='\n')
+        print('Объекты для обработки')
+        print(*[f'{item[1]} - {item[0]}' for item in controllers.items()], sep='\n')
         controller_number = None
         while controller_number is None:
             s = input('Введите: ')
-            if s.isdigit() and s in ['1', '2', '3']:
+            if s.isdigit() and controllers.get(int(s)):
                 controller_number = int(s)
             else:
                 print('Не удалось распознать запрос')
