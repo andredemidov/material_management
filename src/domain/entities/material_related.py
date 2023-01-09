@@ -18,7 +18,7 @@ class MaterialRelated:
     order: MaterialOrder = None
     notification: MaterialNotification = None
     rest_supply: List[MaterialSupply] = field(default_factory=list)
-    name_valid: bool = None
+    name_valid: bool = True
     validity_confirmed: bool = False
     available: (int, float) = 0
     free_available: (int, float) = 0
