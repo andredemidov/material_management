@@ -6,14 +6,14 @@ from src.domain.entities.material_related import MaterialRelated
 from src.domain.entities.material_supply import MaterialSupply
 from src.domain.entities.material_notification import MaterialNotification
 from src.domain.entities.material_order import MaterialOrder
-from src.domain.repositories.repository import Repository
+from src.domain.repositories.requirement_repository import RequirementRepository
 
 
 class TestGetSupplyDataForRequirements(unittest.TestCase):
 
     def setUp(self) -> None:
         self.supply = MaterialSupply(
-            code='forvalidation',
+            code='0000000000',
             amount=2000,
             root_id='forvalidation',
             root_name='forvalidation',
@@ -23,7 +23,7 @@ class TestGetSupplyDataForRequirements(unittest.TestCase):
             name='forvalidation'
         )
         self.rest_supply = MaterialSupply(
-            code='forvalidation',
+            code='0000000000',
             amount=100,
             root_id='forvalidation',
             root_name='forvalidation',
@@ -33,7 +33,7 @@ class TestGetSupplyDataForRequirements(unittest.TestCase):
             name='forvalidation'
         )
         self.free_supply = MaterialSupply(
-            code='forvalidation',
+            code='0000000000',
             amount=5,
             root_id='forvalidation',
             root_name='forvalidation',
@@ -43,14 +43,14 @@ class TestGetSupplyDataForRequirements(unittest.TestCase):
             name='forvalidation'
         )
         self.notification = MaterialNotification(
-            code='forvalidation',
+            code='0000000000',
             shipped=15,
             delivery_date=datetime.now(),
             shipping_date=datetime.now(),
         )
         self.notification.shipped_available = 15
         self.order = MaterialOrder(
-            code='forvalidation',
+            code='0000000000',
             contractor_id='forvalidation',
             moving=1000,
             delivered=1000,
@@ -60,7 +60,7 @@ class TestGetSupplyDataForRequirements(unittest.TestCase):
             related_materials = [
                 MaterialRelated(
                     host='forvalidation',
-                    code='forvalidation',
+                    code='0000000000',
                     supply=self.supply,
                     rest_supply=[self.rest_supply],
                     free_supply=self.free_supply,
@@ -81,15 +81,25 @@ class TestGetSupplyDataForRequirements(unittest.TestCase):
                 mounted=i * 0.2 if i % 10 == 0 else i,
                 mounted_spool=i * 0.1,
                 related_materials=related_materials,
+                construction='forvalidation',
+                construction_subobject='forvalidation',
+                level_3='forvalidation',
+                project_section='forvalidation',
+                weld=0,
             )
 
             requirements.append(requirement)
-        self.stub_repository = Repository(requirements)
+        self.stub_repository = RequirementRepository(
+            get_data_adapter=None,
+            post_data_adapter=None,
+            root=None,
+            entries=requirements
+        )
 
     def test_execute_sample_data_right_return(self):
         # arrange
         stub_repository = self.stub_repository
-        requirements = stub_repository.list()
+        requirements = stub_repository.get()
 
         # act
         GetSupplyDataForRequirements(stub_repository).execute()
@@ -103,7 +113,7 @@ class TestGetSupplyDataForRequirements(unittest.TestCase):
         self.assertEqual(len(supplied), 1)
         self.assertEqual(supplied[0], self.supply.supplied)
 
-        issued = list(set(map(lambda x: x.issued, requirements)))
+        issued = list(set(map(lambda x: x.new_issued, requirements)))
         self.assertEqual(len(issued), 1)
         self.assertEqual(issued[0], self.supply.issued)
 
@@ -156,7 +166,7 @@ class TestGetSupplyDataForRequirements(unittest.TestCase):
     def test_execute_sample_data_mounted_first(self):
         # arrange
         stub_repository = self.stub_repository
-        requirements = stub_repository.list()
+        requirements = stub_repository.get()
 
         # act
         FakeGetSupplyDataForRequirements(stub_repository).execute()
