@@ -45,7 +45,10 @@ class NormalizeForRoot:
         log.write_info('Validating complete')
 
         log.write_info('Normalizing')
-        NormalizeRelatedMaterials(self._requirement_repository).execute()
+        NormalizeRelatedMaterials(
+            requirement_repository=self._requirement_repository,
+            related_material_repository=self._related_material_repository,
+        ).execute()
 
         log.write_info('Creating related materials')
         responses_statistic = self._related_material_repository.create()

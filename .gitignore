@@ -1,6 +1,6 @@
 __pycache__/
-*.py[cod]
-logs/
-.idea/
-authentication_config.json
-token.txt
+/*.py[cod]
+/token.txt
+/authentication_config.json
+/logs/
+/.idea/

@@ -10,6 +10,7 @@ from domain.use_cases.calculate_notifications_available import CalculateNotifica
 from domain.use_cases.set_common_units_notification import SetCommonUnitsNotification
 from domain.use_cases.set_common_units_order import SetCommonUnitsOrder
 from domain.use_cases.set_common_units_requirement import SetCommonUnitsRequirement
+from domain.use_cases.set_common_units_supply import SetCommonUnitsSupply
 from domain.use_cases.normalize_related_materials import NormalizeRelatedMaterials
 
 
@@ -47,12 +48,14 @@ class DistributeForRoot:
     def _add_related_materials_from_replacement_data(self):
         self._log_adapter.write_info(f'Normalizing called')
         NormalizeRelatedMaterials(
-            self._requirement_repository,
-            self._replaced_nomenclatures_repository
+            requirement_repository=self._requirement_repository,
+            related_material_repository=self._related_material_repository,
+            requirement_repository_source=self._replaced_nomenclatures_repository
         ).execute()
 
     def _set_common_units(self):
         self._log_adapter.write_info(f'Set common units called')
+        SetCommonUnitsSupply(self._main_supply_repository).execute()
         SetCommonUnitsRequirement(self._requirement_repository).execute()
         SetCommonUnitsOrder(self._order_repository).execute()
         SetCommonUnitsNotification(self._notification_repository).execute()

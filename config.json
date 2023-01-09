@@ -1,7 +1,7 @@
 {
   "data_sources": {
     "codes_replacement_file_path": "//irkoil/dfs/WorkDATA/OCOKS_IR_data/mt/code_replacement/izp_ozh.xlsx",
-    "requirements_data_export_file_path": "C:/python/requirements_db.xlsx",
+    "requirements_data_export_file_path": "//irkoil/dfs/WorkDATA/OCOKS_IR_data/mt/db/requirements_db.xlsx",
     "url": "https://construction.irkutskoil.ru/"
   },
   "logs": {

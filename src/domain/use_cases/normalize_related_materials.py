@@ -3,19 +3,20 @@ from domain.entities import MaterialRelated, MaterialRequirement
 
 class NormalizeRelatedMaterials:
 
-    def __init__(self, requirement_repository, requirement_repository_source=None):
+    def __init__(self, requirement_repository, related_material_repository, requirement_repository_source=None):
         self._requirement_repository = requirement_repository
+        self._related_material_repository = related_material_repository
         if requirement_repository_source:
             self._repository_source = requirement_repository_source
         else:
             self._repository_source = requirement_repository
 
-    @staticmethod
-    def _add_code_to_related_materials(requirement: MaterialRequirement):
+    def _add_code_to_related_materials(self, requirement: MaterialRequirement):
         for code in requirement.codes_set:
             if code not in requirement.related_materials:
                 related_material = MaterialRelated(host=requirement.item_id, code=code)
                 requirement.related_materials.append(related_material)
+                self._related_material_repository.add(related_material)
 
     @staticmethod
     def _get_valid_related_materials(requirement: MaterialRequirement):
