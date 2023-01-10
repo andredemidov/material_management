@@ -10,6 +10,7 @@ from domain.use_cases.calculate_notifications_available import CalculateNotifica
 from domain.use_cases.set_common_units_notification import SetCommonUnitsNotification
 from domain.use_cases.set_common_units_order import SetCommonUnitsOrder
 from domain.use_cases.set_common_units_requirement import SetCommonUnitsRequirement
+from domain.use_cases.set_common_units_supply import SetCommonUnitsSupply
 from domain.use_cases.normalize_related_materials import NormalizeRelatedMaterials
 
 
@@ -54,6 +55,7 @@ class DistributeForRoot:
 
     def _set_common_units(self):
         self._log_adapter.write_info(f'Set common units called')
+        SetCommonUnitsSupply(self._main_supply_repository).execute()
         SetCommonUnitsRequirement(self._requirement_repository).execute()
         SetCommonUnitsOrder(self._order_repository).execute()
         SetCommonUnitsNotification(self._notification_repository).execute()
@@ -82,7 +84,7 @@ class DistributeForRoot:
         GetRelatedMaterialOrderInstances(self._requirement_repository, self._order_repository).execute()
         GetRelatedMaterialNotificationInstances(self._requirement_repository, self._notification_repository).execute()
         GetRelatedMaterialSupplyInstances(self._requirement_repository, self._main_supply_repository).execute()
-        GetSupplyDataForRequirements(self._requirement_repository).execute()
+        GetSupplyDataForRequirements(self._requirement_repository, only_valid=False).execute()
 
     def _save_requirements(self):
         changed_requirements = list(filter(lambda x: x.have_change(), self._requirement_repository.get_own_supplied_with_main_code()))

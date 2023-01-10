@@ -7,5 +7,5 @@ class SetCommonUnitsSupply(SetCommonUnitsAbstract):
 
         new_unit, i = self.UNITS.get(instance.unit)
         instance.issued = instance.issued * i
-        instance.new_supplied = instance.new_supplied * i
+        instance.supplied = instance.supplied * i
         super()._calculate_and_set(instance)
