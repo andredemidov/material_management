@@ -84,7 +84,7 @@ class DistributeForRoot:
         GetRelatedMaterialOrderInstances(self._requirement_repository, self._order_repository).execute()
         GetRelatedMaterialNotificationInstances(self._requirement_repository, self._notification_repository).execute()
         GetRelatedMaterialSupplyInstances(self._requirement_repository, self._main_supply_repository).execute()
-        GetSupplyDataForRequirements(self._requirement_repository).execute()
+        GetSupplyDataForRequirements(self._requirement_repository, only_valid=False).execute()
 
     def _save_requirements(self):
         changed_requirements = list(filter(lambda x: x.have_change(), self._requirement_repository.get_own_supplied_with_main_code()))

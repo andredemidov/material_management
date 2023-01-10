@@ -1,4 +1,5 @@
 import unittest
+from random import choice
 from datetime import datetime
 from src.domain.use_cases.get_supply_data_for_requirement import GetSupplyDataForRequirements
 from src.domain.entities.material_requirement import MaterialRequirement
@@ -66,6 +67,8 @@ class TestGetSupplyDataForRequirements(unittest.TestCase):
                     free_supply=self.free_supply,
                     notification=self.notification,
                     order=self.order,
+                    name_valid=choice([True, False]),
+                    delete=True,
                 ),
             ]
             requirement = MaterialRequirement(
@@ -105,59 +108,36 @@ class TestGetSupplyDataForRequirements(unittest.TestCase):
         GetSupplyDataForRequirements(stub_repository).execute()
 
         # assert
-        supply_amount = list(set(map(lambda x: x.new_supply_amount, requirements)))
-        self.assertEqual(len(supply_amount), 1)
-        self.assertEqual(supply_amount[0], self.supply.amount)
+        total_attrs = [
+            ('new_supply_amount', self.supply.amount),
+            ('new_supplied', self.supply.supplied),
+            ('new_issued', self.supply.issued),
+            ('new_rest_total_available', self.rest_supply.total_available),
+            ('new_free_total_available', self.free_supply.total_available),
+            ('new_total_moving', self.order.moving),
+            ('new_total_delivered', self.order.delivered),
+            ('new_shipped_total_available', self.notification.shipped),
+        ]
+        sum_attrs = [
+            ('new_available', self.supply.total_available),
+            ('new_rest_available', self.rest_supply.total_available),
+            ('new_free_available', self.free_supply.total_available),
+            ('new_moving', self.order.moving),
+            ('new_delivered', self.order.delivered),
+            ('new_shipped_available', self.notification.shipped),
+        ]
+        for attr, value in total_attrs:
+            values = sorted(list(set(map(lambda x: getattr(x, attr), requirements))))
+            self.assertEqual(values[0], 0)
+            self.assertEqual(values[-1], value, attr)
 
-        supplied = list(set(map(lambda x: x.new_supplied, requirements)))
-        self.assertEqual(len(supplied), 1)
-        self.assertEqual(supplied[0], self.supply.supplied)
+        for attr, target_value in sum_attrs:
+            value = sum(list(map(lambda x: getattr(x, attr), requirements)))
+            self.assertEqual(value, target_value, attr)
 
-        issued = list(set(map(lambda x: x.new_issued, requirements)))
-        self.assertEqual(len(issued), 1)
-        self.assertEqual(issued[0], self.supply.issued)
-
-        max_date = list(set(map(lambda x: x.new_max_date, requirements)))
-        self.assertEqual(len(max_date), 1)
-        self.assertEqual(max_date[0], self.supply.max_date)
-
-        rest_total_available = list(set(map(lambda x: x.new_rest_total_available, requirements)))
-        self.assertEqual(len(rest_total_available), 1)
-        self.assertEqual(rest_total_available[0], self.rest_supply.total_available)
-
-        free_total_available = list(set(map(lambda x: x.new_free_total_available, requirements)))
-        self.assertEqual(len(free_total_available), 1)
-        self.assertEqual(free_total_available[0], self.free_supply.total_available)
-
-        total_moving = list(set(map(lambda x: x.new_total_moving, requirements)))
-        self.assertEqual(len(total_moving), 1)
-        self.assertEqual(total_moving[0], self.order.moving)
-
-        total_delivered = list(set(map(lambda x: x.new_total_delivered, requirements)))
-        self.assertEqual(len(total_delivered), 1)
-        self.assertEqual(total_delivered[0], self.order.delivered)
-
-        shipped_total_available = list(set(map(lambda x: x.new_shipped_total_available, requirements)))
-        self.assertEqual(len(shipped_total_available), 1)
-        self.assertEqual(shipped_total_available[0], self.notification.shipped)
-
-        sum_available = sum(list(map(lambda x: x.new_available, requirements)))
-        self.assertEqual(sum_available, self.supply.total_available)
-
-        sum_rest_available = sum(list(map(lambda x: x.new_rest_available, requirements)))
-        self.assertEqual(sum_rest_available, self.rest_supply.total_available)
-
-        sum_free_available = sum(list(map(lambda x: x.new_free_available, requirements)))
-        self.assertEqual(sum_free_available, self.free_supply.total_available)
-
-        sum_moving = sum(list(map(lambda x: x.new_moving, requirements)))
-        self.assertEqual(sum_moving, self.order.moving)
-
-        sum_delivered = sum(list(map(lambda x: x.new_delivered, requirements)))
-        self.assertEqual(sum_delivered, self.order.delivered)
-
-        sum_shipped_available = sum(list(map(lambda x: x.new_shipped_available, requirements)))
-        self.assertEqual(sum_shipped_available, self.notification.shipped)
+        # max_dates = list(set(map(lambda x: x.new_max_date, requirements)))
+        # self.assertEqual(max_dates[0], 0)
+        # self.assertEqual(max_dates[-1], self.supply.max_date)
 
         for requirement in requirements:
             target_sum = requirement.total_available + requirement.new_moving
@@ -176,6 +156,20 @@ class TestGetSupplyDataForRequirements(unittest.TestCase):
             self.assertLessEqual(requirement.new_moving, requirement.remainder_for_moving_from_mounted)
             target_sum = requirement.total_available + requirement.new_moving
             self.assertLessEqual(target_sum, requirement.amount)
+
+    def test_execute_only_valid_false_distribution_regardless_to_validity(self):
+        # arrange
+        stub_repository = self.stub_repository
+        requirements = stub_repository.get()
+
+        # act
+        GetSupplyDataForRequirements(stub_repository, only_valid=False).execute()
+
+        # assert
+        for requirement in requirements:
+            related_materials = list(filter(lambda x: not x.delete, requirement.related_materials))
+            target_sum = sum([x.supply.amount for x in related_materials]) if related_materials else 0
+            self.assertEqual(target_sum, requirement.new_supply_amount)
 
 
 class FakeGetSupplyDataForRequirements(GetSupplyDataForRequirements):

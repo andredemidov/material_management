@@ -3,8 +3,9 @@ from datetime import datetime
 
 class GetSupplyDataForRequirements:
 
-    def __init__(self, requirement_repository):
+    def __init__(self, requirement_repository, only_valid=True):
         self._requirement_repository = requirement_repository
+        self._only_valid = only_valid
 
     @staticmethod
     def _get_sum_total_value(a, b):
@@ -61,9 +62,8 @@ class GetSupplyDataForRequirements:
                 setattr(requirement, set_attr, set_value + supply_object_compare)
                 setattr(supply_object, supply_object_compare_attr, 0)
 
-    @classmethod
     def _distribute(
-            cls,
+            self,
             requirement,
             supply_object_attr,
             supply_object_compare_attr,
@@ -76,8 +76,13 @@ class GetSupplyDataForRequirements:
     ):
         if total_attributes is None:
             total_attributes = list()
-        valid_related_materials = list(filter(lambda x: x.valid(), requirement.related_materials))
-        for related_material in valid_related_materials:
+
+        if self._only_valid:
+            related_materials = list(filter(lambda x: x.valid(), requirement.related_materials))
+        else:
+            related_materials = list(filter(lambda x: not x.delete, requirement.related_materials))
+
+        for related_material in related_materials:
             supply_object = getattr(related_material, supply_object_attr)
             kwargs = {
                 'requirement': requirement,
@@ -93,16 +98,16 @@ class GetSupplyDataForRequirements:
             elif isinstance(supply_object, list):
                 for one_object in supply_object:
                     kwargs['supply_object'] = one_object
-                    cls._distribute_one(**kwargs)
+                    self._distribute_one(**kwargs)
                     if set_total_flag:
                         for total_attribute in total_attributes:
-                            cls._set_total_one(requirement, one_object, **total_attribute)
+                            self._set_total_one(requirement, one_object, **total_attribute)
             else:
                 kwargs['supply_object'] = supply_object
-                cls._distribute_one(**kwargs)
+                self._distribute_one(**kwargs)
                 if set_total_flag:
                     for total_attribute in total_attributes:
-                        cls._set_total_one(requirement, supply_object, **total_attribute)
+                        self._set_total_one(requirement, supply_object, **total_attribute)
 
     def _get_orders_data_new(self, requirement, set_total_flag=True, compare_attr='remainder_for_moving'):
         total_attributes = [
