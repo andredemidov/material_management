@@ -109,7 +109,7 @@ class SaveRequirementAdapter(AbstractAdapter):
                 'Name': 'forvalidation',
                 'Value': item.new_supply_request if item.new_supply_request else None,
                 'Type': 2,
-                'Id': self.supply_request_attribute_id
+                'Id': self.supply_request_list_attribute_id
             },
             {
                 'Name': 'forvalidation',

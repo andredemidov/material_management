@@ -208,7 +208,7 @@ class GetRequirementAdapter(AbstractAdapter):
         )
         requirement.cur_supply_request = self.get_value(
             attributes,
-            self.supply_request_attribute_id,
+            self.supply_request_list_attribute_id,
         )
 
     def execute(self, root: Root) -> List[MaterialRequirement]:

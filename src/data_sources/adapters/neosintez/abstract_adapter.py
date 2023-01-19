@@ -60,6 +60,7 @@ class AbstractAdapter:
     actual_attribute_id = '0f1c8267-801a-ea11-910b-005056b6948b'
     mass_attribute_id = '7534e5cb-2881-e911-8115-817c3f53a992'
     codes_string_attribute_id = 'da5dd7f2-91eb-ec11-9131-005056b6948b'
+    supply_request_list_attribute_id = '78e72aad-c197-ed11-9158-005056b6948b'
     free_available_attribute_id = '67f03111-35ed-ec11-9131-005056b6948b'
     free_total_available_attribute_id = '17a3b446-35ed-ec11-9131-005056b6948b'
     rest_available_attribute_id = 'ca519e0a-35ed-ec11-9131-005056b6948b'
