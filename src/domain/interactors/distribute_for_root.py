@@ -109,7 +109,10 @@ class DistributeForRoot:
     def _write_statistic_into_log(self, statistic: dict):
         count_success = statistic["success"]
         count_error = statistic["error"]
-        self._log_adapter.write_info(f'Success {count_success}, error {count_error}')
+        if count_error:
+            self._log_adapter.write_warning(f'Success {count_success}, error {count_error}')
+        else:
+            self._log_adapter.write_info(f'Success {count_success}, error {count_error}')
 
     def info(self) -> str:
         return f'distribution {self._root.name}'

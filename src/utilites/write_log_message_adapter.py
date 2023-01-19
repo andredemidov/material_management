@@ -30,5 +30,9 @@ class WriteLogMessageAdapter:
         logging.debug(message)
 
     @staticmethod
+    def write_warning(message):
+        logging.warning(message)
+
+    @staticmethod
     def write_exception(message):
         logging.exception(message)
