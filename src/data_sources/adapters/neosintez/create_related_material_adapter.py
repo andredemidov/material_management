@@ -49,7 +49,7 @@ class CreateRelatedMaterialAdapter(AbstractAdapter):
 
         result = {'success': 0, 'error': 0}
         payloads = self._get_payloads(items)
-        responses = neosintez.MakeRequests.execute(payloads, self._session, 'post', 1)
+        responses = neosintez.MakeRequests.execute(payloads, self._session, 'post')
         self._set_self_id_for_created(items, responses)
         for response in responses:
             if response['status'] == 200:
