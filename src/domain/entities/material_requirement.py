@@ -93,7 +93,11 @@ class MaterialRequirement:
 
     @property
     def new_codes_string(self):
-        return ';'.join(sorted(list(map(lambda x: x.code, self.related_materials))))
+        """
+        return separated by ';' string including codes of not deleted related materials
+        """
+        not_deleted_related_materials = list(filter(lambda x: not x.delete, self.related_materials))
+        return ';'.join(sorted(list(map(lambda x: x.code, not_deleted_related_materials))))
 
     @property
     def new_supply_request(self):
