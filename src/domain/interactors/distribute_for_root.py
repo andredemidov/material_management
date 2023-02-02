@@ -11,6 +11,7 @@ from domain.use_cases.set_common_units_order import SetCommonUnitsOrder
 from domain.use_cases.set_common_units_requirement import SetCommonUnitsRequirement
 from domain.use_cases.set_common_units_supply import SetCommonUnitsSupply
 from domain.use_cases.normalize_related_materials import NormalizeRelatedMaterials
+from domain.use_cases.validate_related_materials_name import ValidateRelatedMaterialsName
 
 
 class DistributeForRoot:
@@ -47,6 +48,10 @@ class DistributeForRoot:
             self._related_material_repository,
             self._root
         ).execute()
+
+    def _validate_related_materials_names(self):
+        self._log_adapter.write_info(f'Validation related materials called')
+        ValidateRelatedMaterialsName(self._requirement_repository)
 
     def _add_related_materials_from_replacement_data(self):
         self._log_adapter.write_info(f'Normalizing called')
