@@ -2,6 +2,7 @@ from .create_related_material_adapter import CreateRelatedMaterialAdapter
 from .delete_related_material_adapter import DeleteRelatedMaterialAdapter
 from .get_notifications_adapter import GetNotificationsAdapter
 from .get_orders_adapter import GetOrdersAdapter
+from .get_storages_adapter import GetStoragesAdapter
 from .get_related_material_adapter import GetRelatedMaterialAdapter
 from .get_requirement_adapter import GetRequirementAdapter
 from .get_root_delete_status_adapter import GetRootDeleteStatusAdapter

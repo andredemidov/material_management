@@ -142,6 +142,17 @@ class GetRelatedMaterialAdapter(AbstractAdapter):
         related_material.cur_code_valid = valid_attribute_value != "Проверить код"
         related_material.cur_delete = valid_attribute_value == "Удалить"
 
+        related_material.cur_onsite_storage_available = self.get_value(
+            attributes,
+            self.onsite_available_attribute_id,
+            attribute_type='int'
+        )
+        related_material.cur_remote_storage_available = self.get_value(
+            attributes,
+            self.remote_available_attribute_id,
+            attribute_type='int'
+        )
+
     def execute(self, root: Root) -> List[MaterialRelated]:
         self._get_related_materials_data(root_id=root.root_id)
 

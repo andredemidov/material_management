@@ -30,6 +30,8 @@ class MaterialRequirement:
     cur_delivered: (int, float) = 0
     cur_shipped_available: (int, float) = 0
     cur_shipped_total_available: (int, float) = 0
+    cur_onsite_storage_available: (int, float) = 0
+    cur_remote_storage_available: (int, float) = 0
     cur_available: (int, float) = 0
     cur_rest_total_available: (int, float) = 0
     cur_rest_available: (int, float) = 0
@@ -51,6 +53,7 @@ class MaterialRequirement:
     one_mass: (int, float) = 0
     contractor_id: str = None
     contractor: str = None
+    onsite_storage_ids: list = field(default_factory=list)
     cad: str = ''
     codes_set: set = field(default_factory=set)
     related_materials: list = field(default_factory=list)
@@ -65,6 +68,8 @@ class MaterialRequirement:
     new_delivered: (int, float) = 0
     new_shipped_available: (int, float) = 0
     new_shipped_total_available: (int, float) = 0
+    new_onsite_storage_available: (int, float) = 0
+    new_remote_storage_available: (int, float) = 0
     new_available: (int, float) = 0
     new_rest_total_available: (int, float) = 0
     new_rest_available: (int, float) = 0
@@ -106,6 +111,10 @@ class MaterialRequirement:
         return result
 
     @property
+    def total_available_storage(self):
+        return self.new_onsite_storage_available + self.new_remote_storage_available
+
+    @property
     def remainder(self):
         value = self.amount - self.mounted_spool - self.new_moving
         return value if value > 0 else 0
@@ -121,7 +130,7 @@ class MaterialRequirement:
 
     @property
     def remainder_for_moving(self):
-        # смонтированное в спул количество здесь отнимается, потому что спцлы собираются другим подрядчиком, 
+        # смонтированное в спул количество здесь отнимается, потому что спулы собираются другим подрядчиком,
         # а остаток к перемещению учитывает только материалы текущего подрядчика
         return self.amount - self.mounted_spool
 
@@ -144,6 +153,8 @@ class MaterialRequirement:
             'delivered': round(self.cur_delivered, 8),
             'shipped_available': round(self.cur_shipped_available, 8),
             'shipped_total_available': round(self.cur_shipped_total_available, 8),
+            'onsite_storage_available': round(self.cur_onsite_storage_available, 8),
+            'remote_storage_available': round(self.cur_remote_storage_available, 8),
             'available': round(self.cur_available, 8),
             'rest_total_available': round(self.cur_rest_total_available, 8),
             'rest_available': round(self.cur_rest_available, 8),
@@ -165,6 +176,8 @@ class MaterialRequirement:
             'delivered': round(self.new_delivered, 8),
             'shipped_available': round(self.new_shipped_available, 8),
             'shipped_total_available': round(self.new_shipped_total_available, 8),
+            'onsite_storage_available': round(self.new_onsite_storage_available, 8),
+            'remote_storage_available': round(self.new_remote_storage_available, 8),
             'available': round(self.new_available, 8),
             'rest_total_available': round(self.new_rest_total_available, 8),
             'rest_available': round(self.new_rest_available, 8),
@@ -209,6 +222,8 @@ class MaterialRequirement:
             'delivered': round(self.cur_delivered, 8),
             'shipped_available': round(self.cur_shipped_available, 8),
             'shipped_total_available': round(self.cur_shipped_total_available, 8),
+            'onsite_storage_available': round(self.cur_onsite_storage_available, 8),
+            'remote_storage_available': round(self.cur_remote_storage_available, 8),
             'available': round(self.cur_available, 8),
             'rest_total_available': round(self.cur_rest_total_available, 8),
             'rest_available': round(self.cur_rest_available, 8),
@@ -226,4 +241,5 @@ class MaterialRequirement:
             'one_mass': self.one_mass,
             'contractor_id': self.contractor_id,
             'contractor': self.contractor,
+            'onsite_storage_ids': self.onsite_storage_ids
         }

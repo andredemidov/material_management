@@ -50,7 +50,7 @@ class GetSupplyDataForRequirements:
 
         if supply_object_compare > 0 and target_value < compare_value:
             if compare_value - target_value <= supply_object_compare:
-                setattr(related_material, related_material_set_attr, compare_value - target_value)
+                setattr(related_material, related_material_set_attr, related_material_set_value + compare_value - target_value)
                 setattr(
                     supply_object,
                     supply_object_compare_attr,
@@ -143,6 +143,29 @@ class GetSupplyDataForRequirements:
             target_attr='new_delivered',
             set_total_flag=set_total_flag,
             total_attributes=total_attributes
+        )
+
+    def _get_storages_data_new(self, requirement, set_total_flag=True, compare_attr='remainder'):
+
+        self._distribute(
+            requirement=requirement,
+            supply_object_attr='onsite_storage',
+            supply_object_compare_attr='storage_available',
+            related_material_set_attr='onsite_storage_available',
+            compare_attr=compare_attr,
+            set_attr='new_onsite_storage_available',
+            target_attr='total_available_storage',
+            set_total_flag=set_total_flag,
+        )
+        self._distribute(
+            requirement=requirement,
+            supply_object_attr='remote_storage',
+            supply_object_compare_attr='storage_available',
+            related_material_set_attr='remote_storage_available',
+            compare_attr=compare_attr,
+            set_attr='new_remote_storage_available',
+            target_attr='total_available_storage',
+            set_total_flag=set_total_flag,
         )
 
     def _get_root_supply_data_new(self, requirement, set_total_flag=True, compare_attr='remainder'):
@@ -238,6 +261,7 @@ class GetSupplyDataForRequirements:
     def _get_supply_data(self, requirements):
         for requirement in requirements:
             self._get_orders_data_new(requirement)
+            self._get_storages_data_new(requirement, set_total_flag=False)
             self._get_root_supply_data_new(requirement)
             self._get_notification_data_new(requirement)
             self._get_free_supply_data_new(requirement)
@@ -246,6 +270,7 @@ class GetSupplyDataForRequirements:
     def _get_supply_data_for_mounted(self, requirements):
         for requirement in requirements:
             self._get_orders_data_new(requirement, compare_attr='remainder_for_moving_from_mounted', set_total_flag=False)
+            self._get_storages_data_new(requirement, compare_attr='remainder_from_mounted', set_total_flag=False)
             self._get_root_supply_data_new(requirement, compare_attr='remainder_from_mounted', set_total_flag=False)
             self._get_notification_data_new(requirement, compare_attr='remainder_from_mounted', set_total_flag=False)
             self._get_free_supply_data_new(requirement, compare_attr='remainder_from_mounted', set_total_flag=False)

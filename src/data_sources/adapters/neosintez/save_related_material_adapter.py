@@ -104,6 +104,18 @@ class SaveRelatedMaterialAdapter(AbstractAdapter):
                     'Type': 1,
                     'Id': self.total_shipped_attribute_id
                 },
+                {
+                    'Name': 'forvalidation',
+                    'Value': item.onsite_storage_available if item.onsite_storage_available else None,
+                    'Type': 1,
+                    'Id': self.onsite_available_attribute_id
+                },
+                {
+                    'Name': 'forvalidation',
+                    'Value': item.remote_storage_available if item.remote_storage_available else None,
+                    'Type': 1,
+                    'Id': self.remote_available_attribute_id
+                },
             ])
             request_body.extend([
                 {

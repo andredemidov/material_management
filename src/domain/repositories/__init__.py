@@ -6,3 +6,4 @@ from .child_root_repository import ChildRootRepository
 from .notification_repository import NotificationRepository
 from .related_material_repository import RelatedMaterialRepository
 from .replaced_nomenclatures_repository import ReplacedNomenclaturesRepository
+from .storages_repository import StoragesRepository

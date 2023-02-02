@@ -1,4 +1,4 @@
-from typing import Collection
+from typing import Sequence
 from domain.entities import MaterialSupply
 
 
@@ -10,7 +10,7 @@ class GetRelatedMaterialSupplyInstances:
         self._root_id = requirement_repository.root_id
 
     @staticmethod
-    def _get_dict(supplies: Collection[MaterialSupply]) -> dict:
+    def _get_dict(supplies: Sequence[MaterialSupply]) -> dict:
         result_dict = {}
         for item in supplies:
             dict_value = result_dict.get(item.code)

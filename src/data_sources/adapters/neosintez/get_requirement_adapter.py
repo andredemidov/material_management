@@ -210,6 +210,16 @@ class GetRequirementAdapter(AbstractAdapter):
             attributes,
             self.supply_request_list_attribute_id,
         )
+        requirement.cur_onsite_storage_available = self.get_value(
+            attributes,
+            self.onsite_available_attribute_id,
+            attribute_type='int'
+        )
+        requirement.cur_remote_storage_available = self.get_value(
+            attributes,
+            self.remote_available_attribute_id,
+            attribute_type='int'
+        )
 
     def execute(self, root: Root) -> List[MaterialRequirement]:
         self._get_requirements_data(root_id=root.root_id)

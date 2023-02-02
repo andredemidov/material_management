@@ -69,6 +69,9 @@ class AbstractAdapter:
     cad_reference_attribute_id = 'f77aec96-d8f5-ec11-9134-005056b6948b'
     mounted_attribute_id = '2d27a85e-9d58-ec11-911a-005056b6948b'
     mounted_spool_attribute_id = '58234b3e-902e-ed11-9143-005056b6948b'
+    onsite_storages_attribute_id = 'e27e3c18-7f9c-ed11-9159-005056b6948b'
+    onsite_available_attribute_id = '839de02c-809c-ed11-9159-005056b6948b'
+    remote_available_attribute_id = '1e2c803f-809c-ed11-9159-005056b6948b'
     # from orders
     order_class_id = 'c776174a-6cfb-ec11-9136-005056b6948b'
     total_delivered_attribute_id = 'f5224d29-d200-ed11-9137-005056b6948b'
@@ -77,12 +80,15 @@ class AbstractAdapter:
     moving_attribute_id = '46597676-6ffb-ec11-9136-005056b6948b'
     contractor_attribute_id = '38ee5557-9efe-ec11-9136-005056b6948b'
     order_creation_date_attribute_id = '46aee5d4-2bfc-ec11-9136-005056b6948b'
-    # from notifucation
+    # from notification
     notification_class_id = '95655fc4-cc43-ed11-9148-005056b6948b'
     shipped_attribute_id = '406d51d6-f83d-ed11-9147-005056b6948b'
     total_shipped_attribute_id = '682ed6ee-4b50-ed11-914b-005056b6948b'
     delivery_date_attribute_id = '42b74304-823d-ed11-9147-005056b6948b'
     shipping_date_attribute_id = 'e5b80c68-f56f-e911-8115-817c3f53a992'
+    # from storages
+    storages_class_id = '6e3082bf-c0a2-ed11-915a-005056b6948b'
+    storage_id_attribute_id = 'e2e832a2-00f7-ea11-9110-005056b6948b'
 
     # for related material
     delete_attribute_value = 'd5fa86ec-b9eb-ec11-9131-005056b6948b'

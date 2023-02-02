@@ -4,13 +4,12 @@ from domain.use_cases.get_related_materials_instances import GetRelatedMaterials
 from domain.use_cases.get_related_material_supply_instances import GetRelatedMaterialSupplyInstances
 from domain.use_cases.get_related_material_order_instance import GetRelatedMaterialOrderInstances
 from domain.use_cases.get_related_material_notification_instance import GetRelatedMaterialNotificationInstances
+from domain.use_cases.get_related_material_storage_instances import GetRelatedMaterialStorageInstances
 from domain.use_cases.mark_duplicated_related_materials import MarkDuplicatedRelatedMaterials
 from domain.use_cases.get_supply_data_for_requirement import GetSupplyDataForRequirements
 from domain.use_cases.calculate_notifications_available import CalculateNotificationsAvailable
-from domain.use_cases.set_common_units_notification import SetCommonUnitsNotification
-from domain.use_cases.set_common_units_order import SetCommonUnitsOrder
-from domain.use_cases.set_common_units_requirement import SetCommonUnitsRequirement
-from domain.use_cases.set_common_units_supply import SetCommonUnitsSupply
+from domain.use_cases.set_common_units import SetCommonUnitsNotification, SetCommonUnitsOrder, \
+    SetCommonUnitsRequirement, SetCommonUnitsSupply, SetCommonUnitsStorage
 from domain.use_cases.normalize_related_materials import NormalizeRelatedMaterials
 
 
@@ -29,6 +28,7 @@ class DistributeForRoot:
             main_supply_repository,
             order_repository,
             notification_repository,
+            storages_repository,
             root,
             log_adapter,
     ):
@@ -38,6 +38,7 @@ class DistributeForRoot:
         self._main_supply_repository = main_supply_repository
         self._order_repository = order_repository
         self._notification_repository = notification_repository
+        self._storages_repository = storages_repository
         self._root: Root = root
         self._log_adapter = log_adapter
 
@@ -59,6 +60,7 @@ class DistributeForRoot:
         SetCommonUnitsRequirement(self._requirement_repository).execute()
         SetCommonUnitsOrder(self._order_repository).execute()
         SetCommonUnitsNotification(self._notification_repository).execute()
+        SetCommonUnitsStorage(self._storages_repository).execute()
 
     def _delete_duplicated_related_materials(self):
         self._log_adapter.write_info('Deleting related materials')
@@ -84,6 +86,7 @@ class DistributeForRoot:
         GetRelatedMaterialOrderInstances(self._requirement_repository, self._order_repository).execute()
         GetRelatedMaterialNotificationInstances(self._requirement_repository, self._notification_repository).execute()
         GetRelatedMaterialSupplyInstances(self._requirement_repository, self._main_supply_repository).execute()
+        GetRelatedMaterialStorageInstances(self._requirement_repository, self._storages_repository)
         GetSupplyDataForRequirements(self._requirement_repository, only_valid=False).execute()
 
     def _save_requirements(self):

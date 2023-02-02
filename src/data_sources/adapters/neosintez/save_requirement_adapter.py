@@ -116,7 +116,19 @@ class SaveRequirementAdapter(AbstractAdapter):
                 'Value': item.new_max_date.strftime('%Y-%m-%d') if item.new_max_date else None,
                 'Type': 3,
                 'Id': self.requirement_date_attribute_id
-            }
+            },
+            {
+                'Name': 'forvalidation',
+                'Value': item.new_onsite_storage_available if item.new_onsite_storage_available else None,
+                'Type': 1,
+                'Id': self.onsite_available_attribute_id
+            },
+            {
+                'Name': 'forvalidation',
+                'Value': item.new_remote_storage_available if item.new_remote_storage_available else None,
+                'Type': 1,
+                'Id': self.remote_available_attribute_id
+            },
         ])
 
         return request_body

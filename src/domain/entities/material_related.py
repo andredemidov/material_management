@@ -3,6 +3,7 @@ from typing import List
 from .material_supply import MaterialSupply
 from .material_order import MaterialOrder
 from .material_notification import MaterialNotification
+from .material_storage import MaterialStorage
 
 
 @dataclass
@@ -18,6 +19,8 @@ class MaterialRelated:
     order: MaterialOrder = None
     notification: MaterialNotification = None
     rest_supply: List[MaterialSupply] = field(default_factory=list)
+    onsite_storage: List[MaterialStorage] = field(default_factory=list)
+    remote_storage: List[MaterialStorage] = field(default_factory=list)
     name_valid: bool = True
     validity_confirmed: bool = False
     available: (int, float) = 0
@@ -28,6 +31,8 @@ class MaterialRelated:
     moving: (int, float) = 0
     delivered: (int, float) = 0
     shipped_available: (int, float) = 0
+    onsite_storage_available: (int, float) = 0
+    remote_storage_available: (int, float) = 0
     # текущие данные распределения поставки
     cur_available: (int, float) = 0
     cur_free_available: (int, float) = 0
@@ -35,6 +40,8 @@ class MaterialRelated:
     cur_moving: (int, float) = 0
     cur_delivered: (int, float) = 0
     cur_shipped_available: (int, float) = 0
+    cur_onsite_storage_available: (int, float) = 0
+    cur_remote_storage_available: (int, float) = 0
     cur_rest_total_available: (int, float) = 0
     cur_issued: (int, float) = 0
     cur_supplied: (int, float) = 0
@@ -150,6 +157,8 @@ class MaterialRelated:
             'delivered': round(self.cur_delivered, 8),
             'shipped_available': round(self.cur_shipped_available, 8),
             'shipped_total_available': round(self.cur_total_shipped, 8),
+            'onsite_storage_available': round(self.cur_onsite_storage_available, 8),
+            'remote_storage_available': round(self.cur_remote_storage_available, 8),
             'available': round(self.cur_available, 8),
             'rest_total_available': round(self.cur_rest_total_available, 8),
             'rest_available': round(self.cur_rest_available, 8),
@@ -172,6 +181,8 @@ class MaterialRelated:
             'delivered': round(self.delivered, 8),
             'shipped_available': round(self.shipped_available, 8),
             'shipped_total_available': round(self.total_shipped, 8),
+            'onsite_storage_available': round(self.onsite_storage_available, 8),
+            'remote_storage_available': round(self.remote_storage_available, 8),
             'available': round(self.available, 8),
             'rest_total_available': round(self.rest_total_available, 8),
             'rest_available': round(self.rest_available, 8),

@@ -3,6 +3,7 @@ from .material_supply import MaterialSupply
 from .material_order import MaterialOrder
 from .material_related import MaterialRelated
 from .material_notification import MaterialNotification
+from .material_storage import MaterialStorage
 from .root import Root
 from .replaced_nomenclature import ReplacedNomenclature
 from .filter import Filter
