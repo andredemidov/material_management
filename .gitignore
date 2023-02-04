@@ -4,3 +4,4 @@ __pycache__/
 .idea/
 authentication_config.json
 token.txt
+db.sqlite3
