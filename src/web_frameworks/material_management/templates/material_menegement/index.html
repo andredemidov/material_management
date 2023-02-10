@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css_additional %}
+
+{% endblock %}
+
+{% block js_additional %}
+    <script src="{% static 'material_management/js/objects.js' %}"></script>
+{% endblock %}
+
+
+
+{% block title%}
+    Стройки
+{% endblock %}
+
+{% block tree %}
+<h2>Стройки</h2>
+<ul class="tree">
+    <li class="object-tree" id="null">Все объекты</li>
+</ul>
+    <button>Get and log child</button>
+    <button>Get high level objects</button>
+{% endblock %}
+{% block content %}
+
+{% endblock %}
+
+

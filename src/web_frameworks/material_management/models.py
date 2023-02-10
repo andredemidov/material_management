@@ -21,6 +21,7 @@ class Contractor(models.Model):
     class Meta:
         db_table = 'contractor'
 
+
 class ObjectType(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
@@ -43,6 +44,7 @@ class Object(models.Model):
     class Meta:
         unique_together = ['name', 'type']
         db_table = 'object'
+
 
 class DistributionAttribute(models.Model):
     name = models.CharField(max_length=255)
@@ -110,6 +112,7 @@ class DeliveryQuery(models.Model):
     phone = models.CharField(max_length=255, blank=True, default='')
     permit = models.CharField(max_length=255, blank=True, default='')
     responsible_email = models.CharField(max_length=255, blank=True, default='')
+    # author = models.ForeignKey('auth.User', on_delete=models.PROTECT, related_name='delivery_queries')
     author = models.CharField(max_length=255, blank=True, default='')
     superviser_email = models.CharField(max_length=255, blank=True, default='')
     creation_date = models.DateTimeField(auto_now_add=True, editable=False)
