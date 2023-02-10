@@ -5,12 +5,12 @@ from domain.use_cases.get_related_material_supply_instances import GetRelatedMat
 from domain.use_cases.get_related_material_order_instance import GetRelatedMaterialOrderInstances
 from domain.use_cases.get_related_material_notification_instance import GetRelatedMaterialNotificationInstances
 from domain.use_cases.get_related_material_storage_instances import GetRelatedMaterialStorageInstances
-from domain.use_cases.mark_duplicated_related_materials import MarkDuplicatedRelatedMaterials
 from domain.use_cases.get_supply_data_for_requirement import GetSupplyDataForRequirements
 from domain.use_cases.calculate_notifications_available import CalculateNotificationsAvailable
 from domain.use_cases.set_common_units import SetCommonUnitsNotification, SetCommonUnitsOrder, \
     SetCommonUnitsRequirement, SetCommonUnitsSupply, SetCommonUnitsStorage
 from domain.use_cases.normalize_related_materials import NormalizeRelatedMaterials
+from domain.use_cases.validate_related_materials_name import ValidateRelatedMaterialsName
 
 
 class DistributeForRoot:
@@ -44,7 +44,15 @@ class DistributeForRoot:
 
     def _get_entities_instances(self):
         self._log_adapter.write_info(f'Get related materials called')
-        GetRelatedMaterialsInstances(self._requirement_repository, self._related_material_repository, self._root).execute()
+        GetRelatedMaterialsInstances(
+            self._requirement_repository,
+            self._related_material_repository,
+            self._root
+        ).execute()
+
+    def _validate_related_materials_names(self):
+        self._log_adapter.write_info(f'Validation related materials called')
+        ValidateRelatedMaterialsName(self._requirement_repository)
 
     def _add_related_materials_from_replacement_data(self):
         self._log_adapter.write_info(f'Normalizing called')
@@ -62,20 +70,6 @@ class DistributeForRoot:
         SetCommonUnitsNotification(self._notification_repository).execute()
         SetCommonUnitsStorage(self._storages_repository).execute()
 
-    def _delete_duplicated_related_materials(self):
-        self._log_adapter.write_info('Deleting related materials')
-        MarkDuplicatedRelatedMaterials(self._requirement_repository).execute()
-        requirements_with_delete_codes = list(
-            filter(lambda item: any(
-                map(lambda c: c.delete, item.related_materials)), self._requirement_repository.get_own_supplied_with_main_code())
-        )
-        self._log_adapter.write_info(f'Total requirements_with_delete_codes {len(requirements_with_delete_codes)}')
-        responses_statistic = self._related_material_repository.delete_marked_for_delete()
-
-        # а удаляются ли у меня ссылки на удаляемые экземпляры связанных материалов в атрибуте потребности
-        self._log_adapter.write_info(f'Deleting related materials complete')
-        self._write_statistic_into_log(responses_statistic)
-
     def _set_reference_with_supply_data(self):
         self._log_adapter.write_info('Referencing supply data with requirements')
         CalculateNotificationsAvailable(
@@ -90,7 +84,8 @@ class DistributeForRoot:
         GetSupplyDataForRequirements(self._requirement_repository, only_valid=False).execute()
 
     def _save_requirements(self):
-        changed_requirements = list(filter(lambda x: x.have_change(), self._requirement_repository.get_own_supplied_with_main_code()))
+        changed_requirements = list(
+            filter(lambda x: x.have_change(), self._requirement_repository.get_own_supplied_with_main_code()))
         self._log_adapter.write_info(f'Total changed requirements {len(changed_requirements)}')
         responses_statistic = self._requirement_repository.save()
         self._log_adapter.write_info(f'Saving requirements complete')
@@ -124,7 +119,6 @@ class DistributeForRoot:
         self._get_entities_instances()
         self._add_related_materials_from_replacement_data()
         self._set_common_units()
-        self._delete_duplicated_related_materials()
         self._set_reference_with_supply_data()
         self._save_requirements()
         self._create_new_related_materials()
