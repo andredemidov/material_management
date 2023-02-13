@@ -70,14 +70,18 @@ class GetRootsAdapter(AbstractAdapter):
         construction_object = self.get_value(attributes, self.construction_object_attribute_id)
         cost_center_code = self.get_value(attributes, self.cost_center_code_attribute_id)
 
-        order = Root(
+        root = Root(
             name=name,
             root_id=root_id,
             parent_root=parent_root_id,
             construction_object=construction_object,
             cost_center_code=cost_center_code,
         )
-        self._roots.append(order)
+        onsite_storage_ids = self.get_value(attributes, self.onsite_storages_attribute_id)
+        if onsite_storage_ids:
+            onsite_storage_ids = [x.strip() for x in onsite_storage_ids.split(';')]
+            root.onsite_storage_ids = onsite_storage_ids
+        self._roots.append(root)
 
     def execute(self, root: Root = None) -> List[Root]:
         print('get roots is called')

@@ -73,7 +73,7 @@ class GetRequirementAdapter(AbstractAdapter):
                 raise RuntimeError(message)
             self._requirements_data.extend(result['data']['Result'])
 
-    def _init_requirement(self, item):
+    def _init_requirement(self, item, onsite_storage_ids):
         attributes = item['Object']['Attributes']
         item_id = item['Object']['Id']
         name = self.get_value(attributes, self.requirement_name_attribute_id).strip()
@@ -125,6 +125,7 @@ class GetRequirementAdapter(AbstractAdapter):
             plan_date=plan_date,
             mounted=mounted,
             mounted_spool=mounted_spool,
+            onsite_storage_ids=onsite_storage_ids,
         )
         self._requirements.append(requirement)
         self._get_current_distributing_data(item, requirement)
@@ -225,5 +226,5 @@ class GetRequirementAdapter(AbstractAdapter):
         self._get_requirements_data(root_id=root.root_id)
         print('response of requirements got', len(self._requirements_data))
         for item in self._requirements_data:
-            self._init_requirement(item)
+            self._init_requirement(item, root.onsite_storage_ids)
         return self._requirements
