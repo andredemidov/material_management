@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, generics
 from rest_framework import permissions
-from .models import Object
-from .serializers import ObjectSerializer, UserSerializer, GroupSerializer
+from .models import Object, Requirement
+from .serializers import ObjectSerializer, UserSerializer, GroupSerializer, RequirementSerializer
 
 
 class ObjectChildList(generics.ListAPIView):
@@ -39,6 +39,24 @@ class ObjectViewSet(viewsets.ModelViewSet):
             return Object.objects.all()
 
 
+class RequirementsViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows requirement to be viewed or edited.
+    """
+    serializer_class = RequirementSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        """
+        This view should return a list of child objects.
+        """
+        object_id = self.request.query_params.get('object')
+        if object_id and object_id.isdigit():
+            return Requirement.objects.filter(object_id=object_id)
+        else:
+            return Requirement.objects.all()
+
+
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
@@ -56,7 +74,11 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-@login_required
-def test_view(request):
 
-    return render(request, 'material_menegement/index.html')
+@login_required
+def index_view(request):
+    objects = Object.objects.all()
+    context = {
+        'objects': objects,
+    }
+    return render(request, 'material_management/index.html', context=context)
