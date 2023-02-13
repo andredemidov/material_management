@@ -1,5 +1,5 @@
 from domain.repositories import RequirementRepository, SupplyRepository, OrderRepository, NotificationRepository, \
-    RelatedMaterialRepository, ReplacedNomenclaturesRepository
+    RelatedMaterialRepository, ReplacedNomenclaturesRepository, StoragesRepository
 from domain.interactors import DistributeForRoot
 from domain.entities import Root
 from utilites.write_log_message_adapter import WriteLogMessageAdapter
@@ -22,6 +22,7 @@ class ChildRootDistributionBuilder:
         replaced_nomenclatures_repository = ReplacedNomenclaturesRepository(get_data_adapter=get_adapter)
         order_repository = OrderRepository(get_data_adapter=get_adapter, root=child_root)
         notification_repository = NotificationRepository(get_data_adapter=get_adapter, root=child_root)
+        storages_repository = StoragesRepository(get_data_adapter=get_adapter, root=child_root)
         new_supply_repository = supply_repository.copy()
         log_adapter = WriteLogMessageAdapter()
 
@@ -31,6 +32,7 @@ class ChildRootDistributionBuilder:
             replaced_nomenclatures_repository=replaced_nomenclatures_repository,
             order_repository=order_repository,
             notification_repository=notification_repository,
+            storages_repository=storages_repository,
             main_supply_repository=new_supply_repository,
             root=child_root,
             log_adapter=log_adapter,
