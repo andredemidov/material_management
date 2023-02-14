@@ -45,6 +45,10 @@ class GetDataAdapterFacade:
     def get_child_roots(self, parent_root: Root) -> List[Root]:
         return neosintez.GetRootsAdapter(self._session).execute(parent_root)
 
+    def get_child_roots_by_child_root(self, child_root: Root) -> (List[Root], Root):
+        main_root = neosintez.GetMainRootByChild(self._session).execute(child_root)
+        return self.get_child_roots(main_root), main_root
+
     def get_main_roots(self) -> List[Root]:
         return neosintez.GetRootsAdapter(self._session).execute()
 

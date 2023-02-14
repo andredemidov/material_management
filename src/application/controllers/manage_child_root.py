@@ -1,7 +1,6 @@
 import logging
 
-from domain.entities import Root
-from domain.repositories import SupplyRepository
+from domain.repositories import SupplyRepository, ChildRootRepository
 from data_sources import GetDataAdapterFacade, PostDataAdapterFacade, GetConnectionAdapter, CloseConnectionAdapter
 from utilites import ReadConfig, WriteLogMessageAdapter
 from application.factories.operate_child_root_factory import OperateChildRootFactory
@@ -25,7 +24,10 @@ class ManageChildRoot:
             get_data_adapter = GetDataAdapterFacade(self._connection, codes_replacement_file_path)
             post_data_adapter = PostDataAdapterFacade(self._connection)
 
-            root = Root('forvalidation', child_root_id)
+            child_root_repository = ChildRootRepository(
+                get_data_adapter=get_data_adapter
+            )
+            root = child_root_repository.get_by_child_root_id(child_root_id)
 
             main_supply_repository = SupplyRepository(
                 get_data_adapter=get_data_adapter,
