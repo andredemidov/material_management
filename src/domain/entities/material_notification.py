@@ -6,19 +6,15 @@ from datetime import datetime
 class MaterialNotification:
     code: str
     shipped: (int, float)
-    delivery_date: datetime
-    shipping_date: datetime
+    max_delivery_date: datetime
+    max_shipping_date: datetime
     unit: str = None
     _available: (int, float) = None
 
     @property
-    def passed_date(self) -> bool:
-        return (datetime.now() - self.shipping_date).days > 20 if self.shipping_date else False
-
-    @property
     def shipped_available(self):
         if self._available is None:
-            return self.shipped if self.passed_date else 0
+            return self.shipped
         else:
             return self._available
 
@@ -34,7 +30,7 @@ class MaterialNotification:
 
     def __eq__(self, other):
         if isinstance(other, MaterialNotification):
-            return self.code == other.code and self.passed_date == other.passed_date
+            return self.code == other.code
         if isinstance(other, str):
             return self.code == other
         else:

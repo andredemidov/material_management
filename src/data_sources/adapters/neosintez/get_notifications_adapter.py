@@ -89,21 +89,28 @@ class GetNotificationsAdapter(AbstractAdapter):
         delivery_date = self.get_value(attributes, self.delivery_date_attribute_id)
         shipping_date = self.get_value(attributes, self.shipping_date_attribute_id)
 
-        next_notification = MaterialNotification(
-            code=code,
-            shipped=shipped,
-            delivery_date=delivery_date,
-            shipping_date=shipping_date,
-            unit=unit,
-        )
-        if next_notification in self._notifications:
-            index = self._notifications.index(next_notification)
-            exist_notification = self._notifications[index]
-            exist_notification.shipped += next_notification.shipped
+        # skip notification if material is not considered shipped
+        if delivery_date <= datetime.now() or (datetime.now() - shipping_date).days > 20:
 
-            self._notifications[index] = exist_notification
-        else:
-            self._notifications.append(next_notification)
+            next_notification = MaterialNotification(
+                code=code,
+                shipped=shipped,
+                max_delivery_date=delivery_date,
+                max_shipping_date=shipping_date,
+                unit=unit,
+            )
+            if next_notification in self._notifications:
+                index = self._notifications.index(next_notification)
+                exist_notification = self._notifications[index]
+                exist_notification.shipped += next_notification.shipped
+                if next_notification.max_delivery_date is not None:
+                    if exist_notification.max_delivery_date is None or exist_notification.max_delivery_date < next_notification.max_delivery_date:
+                        exist_notification.max_delivery_date = next_notification.max_delivery_date
+                if next_notification.max_shipping_date is not None:
+                    if exist_notification.max_shipping_date is None or exist_notification.max_shipping_date < next_notification.max_shipping_date:
+                        exist_notification.max_shipping_date = next_notification.max_shipping_date
+            else:
+                self._notifications.append(next_notification)
 
     def execute(self, root: Root, date: datetime = None) -> List[MaterialNotification]:
         if date:

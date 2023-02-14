@@ -59,8 +59,8 @@ class TestGetSupplyDataForRequirements(unittest.TestCase):
         self.notification = MaterialNotification(
             code='0000000000',
             shipped=15,
-            delivery_date=datetime.now(),
-            shipping_date=datetime.now(),
+            max_delivery_date=datetime.now(),
+            max_shipping_date=datetime.now(),
         )
         self.notification.shipped_available = 15
         self.order = MaterialOrder(

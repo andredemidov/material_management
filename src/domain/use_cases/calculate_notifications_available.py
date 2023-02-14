@@ -10,17 +10,16 @@ class CalculateNotificationsAvailable:
         self._root = root
 
     @staticmethod
-    def _calculate(supplies: List[MaterialSupply], notifications: List[MaterialNotification]):
-        for material in notifications:
-            index = supplies.index(material.code)
-            supply = supplies.pop(index)
-            material.shipped_available = material.shipped - supply.supplied
+    def _calculate(supplies_dict: dict[str, MaterialSupply], notifications: List[MaterialNotification]):
+        for notification in notifications:
+            supply = supplies_dict.get(notification.code)
+            if supply:
+                notification.shipped_available = notification.shipped - supply.supplied
 
     def execute(self):
         supplies = self._supply_repository.get_by_root_id(self._root.root_id)
-        supplies.sort(key=lambda x: x.code)
+        supplies_dict = {x.code: x for x in supplies}
         notifications = self._material_notification_repository.get()
-        notifications.sort(key=lambda x: x.code)
-        supplies = list(filter(lambda x: x.code in notifications, supplies))
-        notifications = list(filter(lambda x: x.passed_date and x.code in supplies, notifications))
-        self._calculate(supplies, notifications)
+        # supplies = list(filter(lambda x: x.code in notifications, supplies))
+        # notifications = list(filter(lambda x: x.passed_date and x.code in supplies, notifications))
+        self._calculate(supplies_dict, notifications)
