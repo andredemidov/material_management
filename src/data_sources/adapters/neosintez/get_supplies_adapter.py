@@ -109,7 +109,6 @@ class GetSuppliesAdapter(AbstractAdapter):
                 if exist_supply.max_date is None or exist_supply.max_date < next_supply.max_date:
                     exist_supply.max_date = next_supply.max_date
 
-            self._supplies[index] = exist_supply
         else:
             self._supplies.append(next_supply)
 
