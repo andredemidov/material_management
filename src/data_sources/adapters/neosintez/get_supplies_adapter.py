@@ -105,8 +105,8 @@ class GetSuppliesAdapter(AbstractAdapter):
             exist_supply.issued += next_supply.issued
             exist_supply.supplied += next_supply.supplied
             exist_supply.supply_request.update(next_supply.supply_request)
-            if next_supply.max_date is not None:
-                if exist_supply.max_date is None or exist_supply.max_date < next_supply.max_date:
+            if next_supply.max_date:
+                if not exist_supply.max_date or exist_supply.max_date < next_supply.max_date:
                     exist_supply.max_date = next_supply.max_date
 
         else:

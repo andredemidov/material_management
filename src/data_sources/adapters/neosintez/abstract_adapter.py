@@ -102,7 +102,7 @@ class AbstractAdapter:
 
     @staticmethod
     def get_value(attributes: dict, attribute_id: str, attribute_type='str', get_only_id=False):
-        result = attributes.get(attribute_id, None)
+        result = attributes.get(attribute_id)
         if result:
             item_type = result['Type']
             if item_type == 8 and get_only_id:
