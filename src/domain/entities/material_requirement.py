@@ -40,6 +40,7 @@ class MaterialRequirement:
     cur_max_date: datetime = None
     cur_codes_string: str = None
     cur_supply_request: str = None
+    cur_mating_part: bool = False
     # необязательные
     model_element_list: list = field(default_factory=list)
     type: str = None
@@ -76,6 +77,7 @@ class MaterialRequirement:
     new_free_available: (int, float) = 0
     new_free_total_available: (int, float) = 0
     new_max_date: datetime = None
+    new_mating_part: bool = False
 
     def __eq__(self, other):
         raise TypeError(f'Невозможно сравнить {type(self)} и {type(other)}')
@@ -167,6 +169,7 @@ class MaterialRequirement:
             'max_date': self.cur_max_date,
             'codes_string': self.cur_codes_string,
             'supply_request': self.cur_supply_request,
+            'mating_part': self.cur_mating_part,
         }
 
     def new_data_to_dict(self) -> dict:
@@ -190,6 +193,7 @@ class MaterialRequirement:
             'max_date': self.new_max_date,
             'codes_string': self.new_codes_string,
             'supply_request': self.new_supply_request,
+            'mating_part': self.new_mating_part,
         }
 
     def have_change(self):
@@ -245,4 +249,5 @@ class MaterialRequirement:
             'one_mass': self.one_mass,
             'contractor_id': self.contractor_id,
             'contractor': self.contractor,
+            'mating_part': self.new_mating_part,
         }

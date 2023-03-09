@@ -1,16 +1,5 @@
 from domain.entities import Root
-
-from domain.use_cases.get_related_materials_instances import GetRelatedMaterialsInstances
-from domain.use_cases.get_related_material_supply_instances import GetRelatedMaterialSupplyInstances
-from domain.use_cases.get_related_material_order_instance import GetRelatedMaterialOrderInstances
-from domain.use_cases.get_related_material_notification_instance import GetRelatedMaterialNotificationInstances
-from domain.use_cases.get_related_material_storage_instances import GetRelatedMaterialStorageInstances
-from domain.use_cases.get_supply_data_for_requirement import GetSupplyDataForRequirements
-from domain.use_cases.calculate_notifications_available import CalculateNotificationsAvailable
-from domain.use_cases.set_common_units import SetCommonUnitsNotification, SetCommonUnitsOrder, \
-    SetCommonUnitsRequirement, SetCommonUnitsSupply, SetCommonUnitsStorage
-from domain.use_cases.normalize_related_materials import NormalizeRelatedMaterials
-from domain.use_cases.validate_related_materials_name import ValidateRelatedMaterialsName
+from domain import use_cases
 
 
 class DistributeForRoot:
@@ -44,7 +33,7 @@ class DistributeForRoot:
 
     def _get_entities_instances(self):
         self._log_adapter.write_info(f'Get related materials called')
-        GetRelatedMaterialsInstances(
+        use_cases.GetRelatedMaterialsInstances(
             self._requirement_repository,
             self._related_material_repository,
             self._root
@@ -52,11 +41,11 @@ class DistributeForRoot:
 
     def _validate_related_materials_names(self):
         self._log_adapter.write_info(f'Validation related materials called')
-        ValidateRelatedMaterialsName(self._requirement_repository)
+        use_cases.ValidateRelatedMaterialsName(self._requirement_repository)
 
     def _add_related_materials_from_replacement_data(self):
         self._log_adapter.write_info(f'Normalizing called')
-        NormalizeRelatedMaterials(
+        use_cases.NormalizeRelatedMaterials(
             requirement_repository=self._requirement_repository,
             related_material_repository=self._related_material_repository,
             requirement_repository_source=self._replaced_nomenclatures_repository
@@ -64,24 +53,34 @@ class DistributeForRoot:
 
     def _set_common_units(self):
         self._log_adapter.write_info(f'Set common units called')
-        SetCommonUnitsSupply(self._main_supply_repository).execute()
-        SetCommonUnitsRequirement(self._requirement_repository).execute()
-        SetCommonUnitsOrder(self._order_repository).execute()
-        SetCommonUnitsNotification(self._notification_repository).execute()
-        SetCommonUnitsStorage(self._storages_repository).execute()
+        use_cases.set_common_units.SetCommonUnitsSupply(self._main_supply_repository).execute()
+        use_cases.set_common_units.SetCommonUnitsRequirement(self._requirement_repository).execute()
+        use_cases.set_common_units.SetCommonUnitsOrder(self._order_repository).execute()
+        use_cases.set_common_units.SetCommonUnitsNotification(self._notification_repository).execute()
+        use_cases.set_common_units.SetCommonUnitsStorage(self._storages_repository).execute()
 
     def _set_reference_with_supply_data(self):
-        self._log_adapter.write_info('Referencing supply data with requirements')
-        CalculateNotificationsAvailable(
+        self._log_adapter.write_info('Join supply data with requirements')
+        use_cases.CalculateNotificationsAvailable(
             self._notification_repository,
             self._main_supply_repository,
             self._root
         ).execute()
-        GetRelatedMaterialOrderInstances(self._requirement_repository, self._order_repository).execute()
-        GetRelatedMaterialNotificationInstances(self._requirement_repository, self._notification_repository).execute()
-        GetRelatedMaterialSupplyInstances(self._requirement_repository, self._main_supply_repository).execute()
-        GetRelatedMaterialStorageInstances(self._requirement_repository, self._storages_repository).execute()
-        GetSupplyDataForRequirements(self._requirement_repository, only_valid=False).execute()
+        use_cases.GetRelatedMaterialOrderInstances(self._requirement_repository, self._order_repository).execute()
+        use_cases.GetRelatedMaterialNotificationInstances(
+            self._requirement_repository,
+            self._notification_repository
+        ).execute()
+        use_cases.GetRelatedMaterialSupplyInstances(
+            self._requirement_repository,
+            self._main_supply_repository
+        ).execute()
+        use_cases.GetRelatedMaterialStorageInstances(self._requirement_repository, self._storages_repository).execute()
+        use_cases.GetSupplyDataForRequirements(self._requirement_repository, only_valid=False).execute()
+
+    def _set_mating_part_status(self):
+        self._log_adapter.write_info('Check if mating part exist')
+        use_cases.CheckIfMatingPartExist(self._requirement_repository).execute()
 
     def _save_requirements(self):
         changed_requirements = list(
@@ -120,6 +119,7 @@ class DistributeForRoot:
         self._add_related_materials_from_replacement_data()
         self._set_common_units()
         self._set_reference_with_supply_data()
+        self._set_mating_part_status()
         self._save_requirements()
         self._create_new_related_materials()
         self._save_related_materials()

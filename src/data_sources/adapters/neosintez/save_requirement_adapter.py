@@ -129,6 +129,12 @@ class SaveRequirementAdapter(AbstractAdapter):
                 'Type': 1,
                 'Id': self.remote_available_attribute_id
             },
+            {
+                'Name': 'forvalidation',
+                'Value': {'Id': self.mating_part_attribute_value, 'name': 'forvalidation'} if item.new_mating_part else None,
+                'Type': 1,
+                'Id': self.mating_part_attribute_id
+            },
         ])
 
         return request_body

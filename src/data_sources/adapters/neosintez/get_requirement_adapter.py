@@ -221,6 +221,11 @@ class GetRequirementAdapter(AbstractAdapter):
             self.remote_available_attribute_id,
             attribute_type='int'
         )
+        requirement.cur_mating_part = self.get_value(
+            attributes,
+            self.remote_available_attribute_id,
+            get_only_id=True
+        ) == self.mating_part_attribute_value
 
     def execute(self, root: Root) -> List[MaterialRequirement]:
         self._get_requirements_data(root_id=root.root_id)

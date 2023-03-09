@@ -72,6 +72,8 @@ class AbstractAdapter:
     onsite_storages_attribute_id = 'e27e3c18-7f9c-ed11-9159-005056b6948b'
     onsite_available_attribute_id = '839de02c-809c-ed11-9159-005056b6948b'
     remote_available_attribute_id = '1e2c803f-809c-ed11-9159-005056b6948b'
+    mating_part_attribute_id = 'adff2396-62be-ed11-9160-005056b6948b'
+    mating_part_attribute_value = 'f15978b1-d193-e911-80cd-9783b3495d40'
     # from orders
     order_class_id = 'c776174a-6cfb-ec11-9136-005056b6948b'
     total_delivered_attribute_id = 'f5224d29-d200-ed11-9137-005056b6948b'
