@@ -203,8 +203,8 @@ class MaterialRequirement:
             'construction': self.construction,
             'construction_object': self.construction_object,
             'construction_subobject': self.construction_subobject,
-            'level_4': self.level_4,
-            'level_3': self.level_3,
+            'level_4': self.level_4.strip(),
+            'level_3': self.level_3.strip(),
             'project_section': self.project_section,
             'axes': self.axes,
             'priority': self.priority,
@@ -245,5 +245,4 @@ class MaterialRequirement:
             'one_mass': self.one_mass,
             'contractor_id': self.contractor_id,
             'contractor': self.contractor,
-            'onsite_storage_ids': self.onsite_storage_ids
         }
