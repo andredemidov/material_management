@@ -131,8 +131,8 @@ class SaveRequirementAdapter(AbstractAdapter):
             },
             {
                 'Name': 'forvalidation',
-                'Value': {'Id': self.mating_part_attribute_value, 'name': 'forvalidation'} if item.new_mating_part else None,
-                'Type': 1,
+                'Value': {'Id': self.mating_part_attribute_value, 'Name': 'forvalidation'} if item.new_mating_part else None,
+                'Type': 8,
                 'Id': self.mating_part_attribute_id
             },
         ])
