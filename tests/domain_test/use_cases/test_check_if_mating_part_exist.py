@@ -31,7 +31,7 @@ class TestCheckIfMatingPartExist(unittest.TestCase):
                 type=random.choice(types),
                 diameter=random.choice([20, 50, 100, None])
             )
-            requirement.one_mass = 50 if requirement.type == 'Труба' else 0
+            requirement.one_mass = random.choice([50, 0]) if requirement.type == 'Труба' else 0
             requirement.new_available = random.choice([0, 1, 12]) if requirement.mounted == 0 else 0
             if requirement.mounted == 0 and requirement.new_available == 0:
                 requirement.new_shipped_available = random.choice([0, 1, 12])
@@ -55,7 +55,7 @@ class TestCheckIfMatingPartExist(unittest.TestCase):
             ]
         )
         if requirement.type == 'Труба':
-            provided = provided / requirement.one_mass * 1000
+            provided = provided / requirement.one_mass * 1000 if requirement.one_mass else 1
         return provided
 
     def test_execute(self):

@@ -44,7 +44,8 @@ class CheckIfMatingPartExist:
             ]
         )
         if requirement.type == 'Труба':
-            provided = provided / requirement.one_mass * 1000
+            # to handle case when one_mass not defined
+            provided = provided / requirement.one_mass * 1000 if requirement.one_mass else 1
         return provided
 
     def execute(self):
