@@ -26,6 +26,14 @@ class GetNotificationsAdapter(AbstractAdapter):
                     "Value": self.notification_class_id
                 }
             ],
+            "Conditions": [
+                {
+                    "Type": 1,
+                    "Attribute": self.delete_attribute_id,
+                    "Operator": 1,
+                    "Value": self.delete_attribute_value
+                },
+            ]
         }
         payloads = [
             {
@@ -60,7 +68,7 @@ class GetNotificationsAdapter(AbstractAdapter):
                     "Type": 1,
                     "Direction": 0,
                     "Logic": 0,
-                    "Attribute": f'{self.actual_attribute_id}',
+                    "Attribute": self.actual_attribute_id,
                     "Operator": 4,
                     "Value": date_string
                 },

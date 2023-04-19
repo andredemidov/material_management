@@ -24,6 +24,14 @@ class GetOrdersAdapter(AbstractAdapter):
                     "Type": 5,
                     "Value": self.order_class_id
                 }
+            ],
+            "Conditions": [
+                {
+                    "Type": 1,
+                    "Attribute": self.delete_attribute_id,
+                    "Operator": 1,
+                    "Value": self.delete_attribute_value
+                },
             ]
         }
         payloads = [

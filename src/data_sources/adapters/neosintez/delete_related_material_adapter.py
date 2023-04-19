@@ -40,7 +40,7 @@ class DeleteRelatedMaterialAdapter(AbstractAdapter):
 
         payloads_get = self._get_payloads_get(related_materials)
         responses_get = neosintez.MakeRequests.execute(payloads_get, self._session, 'get')
-        print('data of hosts are got')
+        print('data of hosts is got')
         # Получить dict вида {self_id: item_id}
         collection_data = {}
         for response in responses_get:

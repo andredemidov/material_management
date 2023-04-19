@@ -25,6 +25,14 @@ class GetSuppliesAdapter(AbstractAdapter):
                     "Value": self.supply_class_id
                 }
             ],
+            "Conditions": [
+                {
+                    "Type": 1,
+                    "Attribute": self.delete_attribute_id,
+                    "Operator": 1,
+                    "Value": self.delete_attribute_value
+                },
+            ]
         }
 
         payloads = [
