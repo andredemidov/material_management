@@ -29,9 +29,18 @@ class GetNotificationsAdapter(AbstractAdapter):
             "Conditions": [
                 {
                     "Type": 1,
+                    "Direction": 1,
+                    "Logic": 0,
                     "Attribute": self.delete_attribute_id,
-                    "Operator": 1,
+                    "Operator": 2,
                     "Value": self.delete_attribute_value
+                },
+                {
+                    "Type": 1,
+                    "Direction": 1,
+                    "Logic": 1,
+                    "Attribute": self.delete_attribute_id,
+                    "Operator": 8,
                 },
             ]
         }
